@@ -335,10 +335,10 @@
         </div>
       </div>
 
-      <!-- 5 Caught Fish Progression Tracker -->
-      <div class="flex items-center space-x-1 sm:space-x-2.5 bg-slate-900/90 px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-full border border-cyan-400/30 shadow-inner">
-        <span class="text-xs font-black text-cyan-300 mr-1 hidden md:inline">Catches:</span>
-        <div id="fish-slots" class="flex items-center space-x-1 sm:space-x-1.5">
+      <!-- 16 Caught Fish Progression Tracker -->
+      <div class="flex items-center space-x-1 sm:space-x-2 bg-slate-900/90 px-2 sm:px-3 py-1 rounded-full border border-cyan-400/30 shadow-inner max-w-[150px] sm:max-w-[280px] md:max-w-none overflow-x-auto scrollbar-none">
+        <span class="text-xs font-black text-cyan-300 mr-1 hidden lg:inline">Catches:</span>
+        <div id="fish-slots" class="flex items-center space-x-0.5 sm:space-x-1">
           <!-- Populated dynamically -->
         </div>
       </div>
@@ -1220,59 +1220,131 @@
     const SPELLING_DICTIONARY = [
       {
         id: 'sp1',
-        word: 'DOLPHIN',
-        category: 'Marine Wildlife',
-        clue: 'Intelligent marine mammal known for agility and playful leaps.',
-        emoji: '🐬',
-        options: ['DOLPHIN', 'SHARK', 'WHALE', 'OCTOPUS']
+        word: 'HORN',
+        category: 'Spelling Words',
+        clue: 'A musical wind instrument or a pointed growth on an animal.',
+        emoji: '📯',
+        options: ['HORN', 'CORN', 'BORN', 'FORK']
       },
       {
         id: 'sp2',
-        word: 'STARFISH',
-        category: 'Coral Seafloor',
-        clue: 'Five-armed ocean creature resting gently on golden sand.',
-        emoji: '⭐',
-        options: ['STARFISH', 'JELLYFISH', 'URCHIN', 'CRAB']
+        word: 'STORY',
+        category: 'Spelling Words',
+        clue: 'A tale or account of real or imaginary events.',
+        emoji: '📖',
+        options: ['STORY', 'STORE', 'SHORE', 'SCORE']
       },
       {
         id: 'sp3',
-        word: 'CORAL',
-        category: 'Deep Reef',
-        clue: 'Vibrant living structure that provides home to thousands of fish.',
-        emoji: '🪸',
-        options: ['CORAL', 'SEAWEED', 'ANEMONE', 'SPONGE']
+        word: 'FORK',
+        category: 'Spelling Words',
+        clue: 'An eating utensil with prongs used for picking up food.',
+        emoji: '🍴',
+        options: ['FORK', 'HORN', 'CORN', 'FORCE']
       },
       {
         id: 'sp4',
-        word: 'BOAT',
-        category: 'Ocean Surface',
-        clue: 'Seafaring vessel gliding across the endless blue waves.',
-        emoji: '⛵',
-        options: ['BOAT', 'CANOE', 'SUBMARINE', 'SAILBOAT']
+        word: 'SCORE',
+        category: 'Spelling Words',
+        clue: 'The number of points or goals achieved in a game.',
+        emoji: '🎯',
+        options: ['SCORE', 'STORE', 'SHORE', 'MORE']
       },
       {
         id: 'sp5',
-        word: 'TURTLE',
-        category: 'Ocean Realm',
-        clue: 'Ancient reptile with a sturdy shell and graceful gliding strokes.',
-        emoji: '🐢',
-        options: ['TURTLE', 'MANATEE', 'LOBSTER', 'MORAY']
+        word: 'STORE',
+        category: 'Spelling Words',
+        clue: 'A shop where goods and items are kept and sold.',
+        emoji: '🏪',
+        options: ['STORE', 'SCORE', 'STORY', 'SHORE']
       },
       {
         id: 'sp6',
-        word: 'TREASURE',
-        category: 'Sunken Galleon',
-        clue: 'Ancient chest filled with glittering gems beneath the tides.',
-        emoji: '🪙',
-        options: ['TREASURE', 'CROWN', 'COINS', 'DIAMOND']
+        word: 'CORN',
+        category: 'Spelling Words',
+        clue: 'A golden-yellow cereal plant with kernels on a cob.',
+        emoji: '🌽',
+        options: ['CORN', 'HORN', 'BORN', 'FORK']
       },
       {
         id: 'sp7',
-        word: 'COMPASS',
-        category: 'Nautical Navigation',
-        clue: 'Navigational tool with a magnetic needle pointing true north.',
-        emoji: '🧭',
-        options: ['COMPASS', 'SPYGLASS', 'RUDDER', 'ANCHOR']
+        word: 'MORNING',
+        category: 'Spelling Words',
+        clue: 'The early part of the day from dawn until midday.',
+        emoji: '🌅',
+        options: ['MORNING', 'REPORT', 'STORY', 'SHORT']
+      },
+      {
+        id: 'sp8',
+        word: 'SHORE',
+        category: 'Spelling Words',
+        clue: 'The land along the edge of a sea, lake, or large body of water.',
+        emoji: '🏖️',
+        options: ['SHORE', 'SHORT', 'SCORE', 'STORE']
+      },
+      {
+        id: 'sp9',
+        word: 'SHORT',
+        category: 'Spelling Words',
+        clue: 'Measuring a small distance from end to end; not long or tall.',
+        emoji: '📏',
+        options: ['SHORT', 'SHORE', 'FORK', 'SPORT']
+      },
+      {
+        id: 'sp10',
+        word: 'BORN',
+        category: 'Spelling Words',
+        clue: 'Brought into life by birth.',
+        emoji: '🐣',
+        options: ['BORN', 'CORN', 'HORN', 'BURN']
+      },
+      {
+        id: 'sp11',
+        word: 'DOOR',
+        category: 'Spelling Words',
+        clue: 'A hinged or sliding barrier for closing the entrance to a room.',
+        emoji: '🚪',
+        options: ['DOOR', 'FOUR', 'MORE', 'FLOOR']
+      },
+      {
+        id: 'sp12',
+        word: 'FOUR',
+        category: 'Spelling Words',
+        clue: 'The cardinal number that comes after three and before five.',
+        emoji: '4️⃣',
+        options: ['FOUR', 'FOR', 'DOOR', 'POUR']
+      },
+      {
+        id: 'sp13',
+        word: 'FOR',
+        category: 'Spelling Words',
+        clue: 'Used to indicate the person or goal intended to receive something.',
+        emoji: '🎁',
+        options: ['FOR', 'FOUR', 'FAR', 'FROM']
+      },
+      {
+        id: 'sp14',
+        word: 'MORE',
+        category: 'Spelling Words',
+        clue: 'A greater or additional quantity, degree, or number.',
+        emoji: '➕',
+        options: ['MORE', 'SCORE', 'STORE', 'SHORE']
+      },
+      {
+        id: 'sp15',
+        word: 'REPORT',
+        category: 'Spelling Words',
+        clue: 'An account or statement describing an event, subject, or finding.',
+        emoji: '📋',
+        options: ['REPORT', 'MORNING', 'SHORT', 'RESORT']
+      },
+      {
+        id: 'sp16',
+        word: 'FORCE',
+        category: 'Spelling Words',
+        clue: 'Strength or physical power exerted upon an object.',
+        emoji: '⚡',
+        options: ['FORCE', 'FORK', 'FARCE', 'FIRST']
       }
     ];
 
@@ -1331,7 +1403,7 @@
     let collectedGear = [];
 
     // Game state tracking
-    const TOTAL_ROUNDS = 5;
+    const TOTAL_ROUNDS = SPELLING_DICTIONARY.length; // Complete 16 spelling words expedition
     let roundPool = [];
     let currentRoundIdx = 0;
     let caughtCount = 0;
@@ -1341,6 +1413,7 @@
     let totalAttempts = 0;
     let isFishing = false;
     let activeWordObj = null;
+    let spawnTimeouts = [];
 
     function createFishSvg(species, word, isLeftFacing) {
       const fontSize = word.length > 7 ? '13px' : '15px';
@@ -1539,9 +1612,9 @@
       slotsContainer.innerHTML = '';
       for (let i = 0; i < TOTAL_ROUNDS; i++) {
         const slot = document.createElement('div');
-        slot.className = `w-7 h-7 rounded-full flex items-center justify-center transition-all duration-500 text-xs font-black ${
+        slot.className = `w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 rounded-full flex items-center justify-center transition-all duration-300 text-[8px] sm:text-[10px] md:text-xs font-black flex-shrink-0 ${
           i < caughtCount
-            ? 'bg-gradient-to-br from-amber-300 to-yellow-500 text-amber-950 scale-110 shadow-lg shadow-yellow-400/50 ring-2 ring-yellow-200'
+            ? 'bg-gradient-to-br from-amber-300 to-yellow-500 text-amber-950 scale-105 shadow-md shadow-yellow-400/40 ring-1 ring-yellow-200'
             : 'bg-slate-800/80 text-slate-500 border border-slate-700'
         }`;
         slot.textContent = i < caughtCount ? '🐟' : '○';
@@ -1656,6 +1729,10 @@
       fishTank.innerHTML = '';
       clearFishingLine();
 
+      // Clear any pending fish spawn timers
+      spawnTimeouts.forEach(t => clearTimeout(t));
+      spawnTimeouts = [];
+
       activeWordObj = roundPool[currentRoundIdx];
       document.getElementById('category-badge').textContent = activeWordObj.category;
       document.getElementById('round-indicator').innerHTML = `<span>🎯</span> Fishing Target #${currentRoundIdx + 1}`;
@@ -1673,39 +1750,51 @@
       const shuffledOptions = [...activeWordObj.options].sort(() => 0.5 - Math.random());
       const depths = [26, 40, 54, 68].sort(() => 0.5 - Math.random());
 
+      // Fish appear gradually into the ocean tank ("poco a poco")
       shuffledOptions.forEach((word, idx) => {
-        const isCorrect = word.trim().toUpperCase() === activeWordObj.word.trim().toUpperCase();
-        // If isLeftFacing is true, it swims to the left; if false, it swims to the right.
-        const isLeftFacing = Math.random() > 0.5;
-        const speed = 11 + Math.random() * 4;
-        const delay = -Math.random() * 6; // Staggered entry so fish are already swimming in tank
-        const species = speciesList[idx % speciesList.length];
-        const top = depths[idx];
+        const timeoutId = setTimeout(() => {
+          if (isFishing) return;
+          const isCorrect = word.trim().toUpperCase() === activeWordObj.word.trim().toUpperCase();
+          const isLeftFacing = Math.random() > 0.5;
+          const speed = 11 + Math.random() * 4;
+          const species = speciesList[idx % speciesList.length];
+          const top = depths[idx];
 
-        // Swimming Fish Node with trajectory matching head direction
-        const fishNode = document.createElement('div');
-        fishNode.id = `fish-item-${idx}`;
-        fishNode.style.top = `${top}%`;
-        fishNode.style.animationDuration = `${speed}s`;
-        fishNode.style.animationDelay = `${delay}s`;
-        fishNode.className = `absolute cursor-pointer select-none z-20 group ${
-          isLeftFacing ? 'swim-path-left' : 'swim-path-right'
-        }`;
+          // Swimming Fish Node with trajectory matching head direction
+          const fishNode = document.createElement('div');
+          fishNode.id = `fish-item-${idx}`;
+          fishNode.style.top = `${top}%`;
+          fishNode.style.animationDuration = `${speed}s`;
+          fishNode.className = `absolute cursor-pointer select-none z-20 group opacity-0 transition-opacity duration-700 ${
+            isLeftFacing ? 'swim-path-left' : 'swim-path-right'
+          }`;
 
-        // Direction orientation wrapper (vertical bobbing without CSS scale overriding)
-        const innerContainer = document.createElement('div');
-        innerContainer.className = 'relative fish-vertical-float transition-transform duration-200 hover:scale-110 active:scale-95';
-        innerContainer.innerHTML = createFishSvg(species, word, isLeftFacing);
+          // Direction orientation wrapper (vertical bobbing without CSS scale overriding)
+          const innerContainer = document.createElement('div');
+          innerContainer.className = 'relative fish-vertical-float transition-transform duration-200 hover:scale-110 active:scale-95';
+          innerContainer.innerHTML = createFishSvg(species, word, isLeftFacing);
 
-        fishNode.appendChild(innerContainer);
+          fishNode.appendChild(innerContainer);
 
-        // Click Handler for Fishing Catch
-        fishNode.addEventListener('click', (e) => {
-          e.stopPropagation();
-          handleFishCast(idx, isCorrect, word, fishNode);
-        });
+          // Click Handler for Fishing Catch
+          fishNode.addEventListener('click', (e) => {
+            e.stopPropagation();
+            handleFishCast(idx, isCorrect, word, fishNode);
+          });
 
-        fishTank.appendChild(fishNode);
+          fishTank.appendChild(fishNode);
+
+          // Smooth gradual entrance
+          requestAnimationFrame(() => {
+            fishNode.classList.remove('opacity-0');
+            fishNode.classList.add('opacity-100');
+          });
+
+          // Soft bubble pop as each fish enters the tank
+          soundEngine.playBubblePop(0.9 + idx * 0.12);
+        }, idx * 720);
+
+        spawnTimeouts.push(timeoutId);
       });
     }
 
@@ -2195,6 +2284,9 @@
       const coinsContainer = document.getElementById('treasure-coins-container');
       if (coinsContainer) coinsContainer.innerHTML = '';
 
+      spawnTimeouts.forEach(t => clearTimeout(t));
+      spawnTimeouts = [];
+
       currentRoundIdx = 0;
       caughtCount = 0;
       streak = 0;
@@ -2203,7 +2295,8 @@
       totalAttempts = 0;
       isFishing = false;
 
-      roundPool = [...SPELLING_DICTIONARY].sort(() => 0.5 - Math.random()).slice(0, TOTAL_ROUNDS);
+      // Include all 16 spelling words across the full expedition
+      roundPool = [...SPELLING_DICTIONARY].sort(() => 0.5 - Math.random());
       renderHudSlots();
       spawnFishForCurrentRound();
     }
