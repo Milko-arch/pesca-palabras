@@ -1,0 +1,2248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spelling Fishing Adventure</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes rodFlex {
+      0%, 100% { transform: rotate(0deg); }
+      35% { transform: rotate(-14deg) scale(0.97, 1.05); }
+      70% { transform: rotate(8deg); }
+    }
+    .animate-rod-cast {
+      animation: rodFlex 0.8s cubic-bezier(0.25, 1, 0.5, 1) !important;
+      transform-origin: 15px 75px;
+    }
+    /* Heavy rod bend when fighting a hooked fish */
+    @keyframes rodHeavyBend {
+      0% { transform: rotate(0deg); }
+      20% { transform: rotate(-16deg) scale(0.94, 1.08); }
+      50% { transform: rotate(-22deg) scale(0.92, 1.12); }
+      75% { transform: rotate(-17deg) scale(0.95, 1.07); }
+      100% { transform: rotate(0deg); }
+    }
+    .animate-rod-fight {
+      animation: rodHeavyBend 1.4s cubic-bezier(0.34, 1.2, 0.64, 1) !important;
+      transform-origin: 15px 75px;
+    }
+    @keyframes boatFloat {
+      0%, 100% { transform: translateY(0px) rotate(-1.5deg); }
+      50% { transform: translateY(-7px) rotate(1.8deg); }
+    }
+    .animate-boat-rock {
+      animation: boatFloat 4.2s ease-in-out infinite;
+      transform-origin: center bottom;
+    }
+    /* Natural Carangiform Locomotion: Precise joint pivot without detaching */
+    @keyframes caudalFinWave {
+      0%, 100% { transform: rotate(0deg) skewY(0deg) scaleX(1); }
+      25% { transform: rotate(-9deg) skewY(-4deg) scaleX(0.97); }
+      75% { transform: rotate(9deg) skewY(4deg) scaleX(0.97); }
+    }
+    @keyframes caudalFinFast {
+      0%, 100% { transform: rotate(0deg) skewY(0deg); }
+      25% { transform: rotate(-18deg) skewY(-8deg); }
+      75% { transform: rotate(18deg) skewY(8deg); }
+    }
+    .fish-tail-wag {
+      transform-box: fill-box;
+      transform-origin: 100% 50%;
+      animation: caudalFinWave 1.15s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+    }
+    .fish-tail-wag-fast {
+      transform-box: fill-box;
+      transform-origin: 100% 50%;
+      animation: caudalFinFast 0.38s ease-in-out infinite;
+    }
+    /* Rhythmic Pectoral Fin Flutter for steering */
+    @keyframes pectoralFlutter {
+      0%, 100% { transform: rotate(0deg) scaleX(1); }
+      50% { transform: rotate(16deg) scaleX(0.82) skewY(-6deg); }
+    }
+    .pectoral-fin-flutter {
+      transform-box: fill-box;
+      transform-origin: 10% 50%;
+      animation: pectoralFlutter 0.72s ease-in-out infinite;
+    }
+    /* Gentle Dorsal Fin Undulation */
+    @keyframes dorsalUndulate {
+      0%, 100% { transform: skewX(0deg) scaleY(1); }
+      50% { transform: skewX(-3.5deg) scaleY(1.04); }
+    }
+    .dorsal-fin-undulate {
+      transform-box: fill-box;
+      transform-origin: bottom center;
+      animation: dorsalUndulate 1.8s ease-in-out infinite;
+    }
+    /* Violent head-shake thrash to dislodge hook */
+    @keyframes headShakeThrash {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      15% { transform: translate(-10px, -4px) rotate(-22deg) scale(1.08); }
+      30% { transform: translate(12px, 5px) rotate(24deg) scale(1.06); }
+      45% { transform: translate(-14px, 3px) rotate(-20deg); }
+      60% { transform: translate(10px, -3px) rotate(18deg); }
+      80% { transform: translate(-6px, 1px) rotate(-10deg); }
+    }
+    .animate-fish-thrash {
+      animation: headShakeThrash 0.42s ease-in-out both;
+    }
+    @keyframes fishStartleEscape {
+      0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+      15% { transform: translate(-15px, -12px) rotate(-18deg) scale(1.1); }
+      30% { transform: translate(15px, 8px) rotate(16deg) scale(1.05); }
+      50% { transform: translate(-25px, -6px) rotate(-12deg); }
+      70% { transform: translate(45px, -10px) rotate(10deg); }
+      100% { transform: translate(110px, -4px) rotate(0deg); }
+    }
+    .animate-fish-struggle {
+      animation: fishStartleEscape 0.9s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    }
+    @keyframes oceanCurrentWave {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .wave-surface {
+      animation: oceanCurrentWave 7s linear infinite;
+    }
+    .wave-surface-slow {
+      animation: oceanCurrentWave 11s linear infinite reverse;
+    }
+    @keyframes causticSweep {
+      0%, 100% { opacity: 0.15; transform: skewX(-12deg) scaleX(1); }
+      50% { opacity: 0.38; transform: skewX(8deg) scaleX(1.18); }
+    }
+    .caustic-light-ray {
+      animation: causticSweep 8s ease-in-out infinite;
+    }
+    @keyframes kelpSwayL {
+      0%, 100% { transform: rotate(-5deg) skewX(-3deg); }
+      50% { transform: rotate(7deg) skewX(4deg); }
+    }
+    @keyframes kelpSwayR {
+      0%, 100% { transform: rotate(6deg) skewX(4deg); }
+      50% { transform: rotate(-6deg) skewX(-3deg); }
+    }
+    .kelp-sway-left {
+      animation: kelpSwayL 5s ease-in-out infinite;
+      transform-origin: bottom center;
+    }
+    .kelp-sway-right {
+      animation: kelpSwayR 6.2s ease-in-out infinite;
+      transform-origin: bottom center;
+    }
+    @keyframes seaGrassWave {
+      0%, 100% { transform: rotate(-8deg) skewX(-4deg); }
+      50% { transform: rotate(10deg) skewX(5deg); }
+    }
+    .seagrass-sway {
+      animation: seaGrassWave 3.6s ease-in-out infinite;
+      transform-origin: bottom center;
+    }
+    @keyframes seaFanWave {
+      0%, 100% { transform: rotate(-4deg) scaleY(1); }
+      50% { transform: rotate(5deg) scaleY(1.03); }
+    }
+    .seafan-sway {
+      animation: seaFanWave 4.8s ease-in-out infinite;
+      transform-origin: bottom center;
+    }
+    @keyframes sandPuffExpand {
+      0% { transform: scale(0.2); opacity: 0.85; }
+      50% { opacity: 0.5; }
+      100% { transform: scale(2.4); opacity: 0; }
+    }
+    .sand-puff-puff {
+      animation: sandPuffExpand 0.95s ease-out forwards;
+    }
+    /* Dynamic head-down diving descent with realistic fluid acceleration */
+    .fish-head-down-sink {
+      transition: top 1.15s cubic-bezier(0.38, 0, 0.24, 1), transform 0.35s ease-out !important;
+    }
+    @keyframes tentacleWave {
+      0%, 100% { transform: rotate(-6deg) scaleY(1); }
+      50% { transform: rotate(8deg) scaleY(1.06); }
+    }
+    .anemone-tentacle {
+      animation: tentacleWave 2.8s ease-in-out infinite alternate;
+      transform-origin: bottom center;
+    }
+    @keyframes rippleGrow {
+      0% { transform: scale(0.2); opacity: 0.9; }
+      100% { transform: scale(2.8); opacity: 0; }
+    }
+    .surface-ripple {
+      animation: rippleGrow 1.4s ease-out forwards;
+    }
+    /* Sinusoidal floating for swimming fish */
+    @keyframes fishVerticalBob {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+    /* Dynamic continuous horizontal swimming paths adapted for all screen widths */
+    @keyframes swimAcrossRight {
+      0% { transform: translateX(-260px); }
+      100% { transform: translateX(calc(100vw + 260px)); }
+    }
+    @keyframes swimAcrossLeft {
+      0% { transform: translateX(calc(100vw + 260px)); }
+      100% { transform: translateX(-260px); }
+    }
+    .swim-path-right {
+      animation: swimAcrossRight linear infinite;
+    }
+    .swim-path-left {
+      animation: swimAcrossLeft linear infinite;
+    }
+    @keyframes risingBubble {
+      0% { transform: translateY(105vh) scale(0.5) translateX(0); opacity: 0; }
+      15% { opacity: 0.75; }
+      50% { transform: translateY(50vh) scale(0.85) translateX(8px); opacity: 0.85; }
+      85% { opacity: 0.75; }
+      100% { transform: translateY(-20px) scale(1.1) translateX(-6px); opacity: 0; }
+    }
+    @keyframes risingBubbleStream {
+      0% { transform: translateY(0) scale(0.4) translateX(0); opacity: 0; }
+      15% { opacity: 0.85; }
+      50% { transform: translateY(-45vh) scale(0.75) translateX(6px); opacity: 0.85; }
+      85% { opacity: 0.8; }
+      100% { transform: translateY(-95vh) scale(1.1) translateX(-8px); opacity: 0; }
+    }
+    /* Photorealistic 3D Glassy Water Bubble */
+    .realistic-bubble {
+      background: radial-gradient(circle at 30% 28%, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.35) 24%, rgba(56,189,248,0.2) 55%, rgba(14,116,144,0.4) 88%, rgba(255,255,255,0.75) 100%);
+      box-shadow: inset -2px -2px 5px rgba(12, 74, 110, 0.45), inset 2px 2px 4px rgba(255, 255, 255, 0.8), 0 0 6px rgba(186, 230, 253, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.55);
+      border-radius: 9999px;
+    }
+    /* Realistic Sunken Treasure Chest & Gold Doubloon Animations */
+    @keyframes chestLidOpen {
+      0% { transform: rotateX(0deg); }
+      100% { transform: rotateX(-108deg); }
+    }
+    .animate-chest-lid {
+      transform-origin: 50% 12%;
+      animation: chestLidOpen 1.1s cubic-bezier(0.34, 1.35, 0.64, 1) forwards;
+      transform-box: fill-box;
+    }
+    @keyframes treasureRadiance {
+      0%, 100% { opacity: 0.55; transform: scale(0.96) rotate(0deg); }
+      50% { opacity: 0.95; transform: scale(1.16) rotate(180deg); }
+    }
+    .treasure-sunburst {
+      animation: treasureRadiance 12s linear infinite;
+    }
+    @keyframes coinGleam {
+      0%, 100% { filter: brightness(1) drop-shadow(0 0 4px rgba(250, 204, 21, 0.4)); }
+      50% { filter: brightness(1.35) drop-shadow(0 0 14px rgba(253, 224, 71, 0.9)); }
+    }
+    .coins-gleam {
+      animation: coinGleam 2.2s ease-in-out infinite;
+    }
+    @keyframes burstCoin {
+      0% { transform: translate(0, 0) scale(0.3) rotate(0deg); opacity: 0; }
+      20% { opacity: 1; }
+      80% { opacity: 1; }
+      100% { transform: translate(var(--tw-cx), var(--tw-cy)) scale(1.1) rotate(var(--tw-rot)); opacity: 0; }
+    }
+    .burst-gold-coin {
+      animation: burstCoin 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes gearGlowPulse {
+      0%, 100% { transform: scale(1) rotate(0deg); filter: drop-shadow(0 0 10px rgba(56,189,248,0.7)); }
+      50% { transform: scale(1.08) rotate(4deg); filter: drop-shadow(0 0 22px rgba(250,204,21,0.9)); }
+    }
+    .gear-unlock-pulse {
+      animation: gearGlowPulse 1.8s ease-in-out infinite;
+    }
+    @keyframes slideDownToast {
+      0% { transform: translate(-50%, -120%); opacity: 0; }
+      15% { transform: translate(-50%, 15px); opacity: 1; }
+      85% { transform: translate(-50%, 15px); opacity: 1; }
+      100% { transform: translate(-50%, -120%); opacity: 0; }
+    }
+    .gear-toast-animation {
+      animation: slideDownToast 4.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 w-screen h-screen h-[100dvh] flex flex-col font-sans text-white select-none overflow-hidden m-0 p-0">
+
+  <div id="game-stage" class="relative w-full h-full flex-1 overflow-hidden shadow-none border-0 bg-gradient-to-b from-sky-400 via-cyan-700 via-blue-900 to-[#021120] flex flex-col">
+
+    <!-- Ambient Underwater Sun Rays (Caustics) -->
+    <div class="absolute inset-0 pointer-events-none z-10 overflow-hidden">
+      <div class="absolute -top-16 left-1/5 w-44 h-[720px] bg-gradient-to-b from-white/35 via-cyan-200/10 to-transparent blur-2xl origin-top caustic-light-ray"></div>
+      <div class="absolute -top-16 left-3/5 w-56 h-[760px] bg-gradient-to-b from-white/30 via-sky-200/10 to-transparent blur-2xl origin-top caustic-light-ray" style="animation-delay: -3.5s; animation-duration: 9.5s;"></div>
+    </div>
+
+    <!-- Floating Ambient Bubbles Layer -->
+    <div id="ambient-bubbles-layer" class="absolute inset-0 pointer-events-none z-10 overflow-hidden"></div>
+
+    <!-- Continuous Effervescent Bubble Columns Rising From the Sandy Seafloor -->
+    <div class="absolute inset-0 pointer-events-none z-15 overflow-hidden">
+      <!-- Left Bubble Column (Near Kelp) -->
+      <div class="absolute bottom-10 left-12 w-3.5 h-3.5 realistic-bubble" style="animation: risingBubbleStream 7.2s ease-in infinite; animation-delay: 0.2s;"></div>
+      <div class="absolute bottom-8 left-14 w-2 h-2 realistic-bubble" style="animation: risingBubbleStream 6.5s ease-in infinite; animation-delay: 2.1s;"></div>
+      <div class="absolute bottom-11 left-16 w-4 h-4 realistic-bubble" style="animation: risingBubbleStream 8s ease-in infinite; animation-delay: 4.3s;"></div>
+
+      <!-- Center-Left Bubble Column -->
+      <div class="absolute bottom-8 left-1/3 w-3 h-3 realistic-bubble" style="animation: risingBubbleStream 7.8s ease-in infinite; animation-delay: 1.2s;"></div>
+      <div class="absolute bottom-6 left-[34%] w-2 h-2 realistic-bubble" style="animation: risingBubbleStream 6.8s ease-in infinite; animation-delay: 3.6s;"></div>
+
+      <!-- Center-Right Bubble Column (Near Reef) -->
+      <div class="absolute bottom-9 left-[62%] w-4.5 h-4.5 realistic-bubble" style="animation: risingBubbleStream 8.4s ease-in infinite; animation-delay: 0.8s;"></div>
+      <div class="absolute bottom-7 left-[64%] w-2.5 h-2.5 realistic-bubble" style="animation: risingBubbleStream 6.2s ease-in infinite; animation-delay: 3.1s;"></div>
+      <div class="absolute bottom-10 left-[66%] w-3 h-3 realistic-bubble" style="animation: risingBubbleStream 7.5s ease-in infinite; animation-delay: 5.4s;"></div>
+
+      <!-- Right Bubble Column -->
+      <div class="absolute bottom-8 right-16 w-3 h-3 realistic-bubble" style="animation: risingBubbleStream 7.1s ease-in infinite; animation-delay: 1.9s;"></div>
+      <div class="absolute bottom-10 right-20 w-4 h-4 realistic-bubble" style="animation: risingBubbleStream 8.2s ease-in infinite; animation-delay: 4.8s;"></div>
+    </div>
+
+    <!-- Global Full-Stage SVG for Exact Rod-Tip to Fish Line Physics -->
+    <svg id="stage-fishing-line-layer" class="absolute inset-0 w-full h-full pointer-events-none z-40 overflow-visible"></svg>
+
+    <!-- Top Deck HUD Header Responsive Layout -->
+    <header class="relative z-30 flex items-center justify-between px-2 sm:px-6 py-1.5 sm:py-2.5 bg-slate-950/80 backdrop-blur-md border-b border-cyan-500/20 shadow-md">
+      <!-- Player Nautical Badge -->
+      <div class="flex items-center space-x-1.5 sm:space-x-3">
+        <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-gradient-to-br from-cyan-400/30 to-blue-600/30 border border-cyan-400/50 flex items-center justify-center text-cyan-200 shadow-inner font-black text-sm sm:text-lg">
+          ⚓
+        </div>
+        <div>
+          <div class="flex items-center space-x-1.5 sm:space-x-2">
+            <span class="text-[9px] sm:text-[11px] font-extrabold uppercase tracking-widest text-cyan-300">
+              Spelling
+            </span>
+            <span id="category-badge" class="px-1.5 sm:px-2.5 py-0.2 sm:py-0.5 text-[8px] sm:text-[10px] bg-cyan-500/20 border border-cyan-400/40 text-cyan-100 rounded-full font-bold truncate max-w-[90px] sm:max-w-none">
+              Marine Wildlife
+            </span>
+          </div>
+          <h2 class="text-xs sm:text-sm font-black text-white tracking-wide flex items-center gap-1">
+            Captain <span class="hidden sm:inline text-cyan-400 font-normal">| On High Seas</span>
+          </h2>
+        </div>
+      </div>
+
+      <!-- 5 Caught Fish Progression Tracker -->
+      <div class="flex items-center space-x-1 sm:space-x-2.5 bg-slate-900/90 px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-full border border-cyan-400/30 shadow-inner">
+        <span class="text-xs font-black text-cyan-300 mr-1 hidden md:inline">Catches:</span>
+        <div id="fish-slots" class="flex items-center space-x-1 sm:space-x-1.5">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
+      <!-- Streaks, Gems & Mute Controls -->
+      <div class="flex items-center space-x-1.5 sm:space-x-3">
+        <div id="streak-badge" class="flex items-center space-x-0.5 sm:space-x-1 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-black bg-slate-800/90 text-slate-300 border border-slate-700 shadow transition-all">
+          <span class="text-yellow-400">🔥</span>
+          <span id="streak-text">x1</span>
+        </div>
+
+        <div class="flex items-center space-x-1 sm:space-x-1.5 bg-amber-500/20 border border-amber-400/40 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-amber-300 font-black text-[10px] sm:text-xs shadow-sm">
+          <span>💎</span>
+          <span id="gems-text">0</span>
+        </div>
+
+        <!-- Collectible Fishing Gear Tackle Box Button -->
+        <button id="tackle-box-btn" class="flex items-center space-x-1 bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/50 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-cyan-200 font-black text-[10px] sm:text-xs shadow-sm cursor-pointer transition active:scale-95" title="View Fishing Gear Collection">
+          <span>🎒</span>
+          <span id="tackle-count-text">0/6</span>
+        </button>
+
+        <button id="mute-btn" class="p-1.5 sm:p-2 rounded-xl bg-white/10 hover:bg-white/20 active:scale-95 transition text-cyan-200 border border-white/10" title="Toggle Sound">
+          <span id="mute-icon" class="text-xs sm:text-base">🔊</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Surface Area (Pier, Floating Boat, Challenge Signboard) -->
+    <div class="relative w-full h-36 sm:h-44 md:h-52 z-20 overflow-visible flex-shrink-0">
+      <!-- Distant Fluffy Sea Clouds -->
+      <div class="absolute top-2 left-8 sm:left-16 w-24 sm:w-32 h-5 sm:h-7 bg-white/30 rounded-full blur-[1px] pointer-events-none"></div>
+      <div class="absolute top-4 right-32 sm:right-44 w-28 sm:w-40 h-6 sm:h-8 bg-white/20 rounded-full blur-[1px] pointer-events-none"></div>
+
+      <!-- Weathered Wooden Pier on the Far Left -->
+      <div class="absolute top-10 sm:top-14 left-0 flex items-end pointer-events-none z-10">
+        <div class="w-16 sm:w-28 md:w-32 h-5 sm:h-7 bg-gradient-to-b from-amber-900 to-amber-950 border-b-4 border-amber-950 shadow-2xl relative">
+          <!-- Dock Piles -->
+          <div class="absolute -top-4 sm:-top-6 left-2 w-3 sm:w-4 h-10 sm:h-14 bg-gradient-to-r from-amber-950 via-amber-900 to-amber-950 rounded-t-sm border-r border-amber-800 shadow"></div>
+          <div class="absolute -top-5 sm:-top-7 left-8 sm:left-14 w-3 sm:w-4 h-11 sm:h-15 bg-gradient-to-r from-amber-950 via-amber-900 to-amber-950 rounded-t-sm border-r border-amber-800 shadow"></div>
+          <div class="absolute top-1 left-2 w-2 h-1 bg-slate-600 rounded-full"></div>
+        </div>
+      </div>
+
+      <!-- Seated Fisherman in Floating Boat (Responsive Scale) -->
+      <div id="boat-anchor-container" class="absolute top-2 sm:top-6 md:top-8 left-1 sm:left-14 md:left-28 z-20 animate-boat-rock pointer-events-none transform scale-[0.68] sm:scale-90 md:scale-100 origin-top-left sm:origin-top-left">
+        <div class="relative w-64 h-40">
+
+          <!-- The Realistic Wooden Boat Skiff -->
+          <div class="absolute bottom-2 left-2 w-56 h-16">
+            <!-- Rear interior wall of boat hull -->
+            <div class="absolute inset-0 bg-gradient-to-b from-amber-950 to-[#2c1305] rounded-b-[2.8rem] border-2 border-amber-950 shadow-2xl"></div>
+            <!-- Internal Wooden Bench (Thwart) where captain sits -->
+            <div class="absolute top-3 left-10 w-36 h-3 bg-amber-800 rounded shadow-md border-t border-amber-600"></div>
+          </div>
+
+          <!-- SEATED CAPTAIN -->
+          <div id="seated-captain" class="absolute bottom-6 left-16 z-10 flex flex-col items-center origin-bottom transition-transform duration-300">
+            <!-- Captain Head & Hat -->
+            <div class="relative flex flex-col items-center z-20">
+              <div class="w-14 h-5 bg-gradient-to-b from-sky-800 to-sky-950 rounded-t-full border border-sky-600 flex items-center justify-center shadow-md">
+                <span class="text-[10px] text-amber-300 font-black">⚓</span>
+              </div>
+              <div class="w-16 h-2 bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 rounded-full border border-amber-700 shadow"></div>
+            </div>
+
+            <!-- Face & Nautical Beard -->
+            <div class="w-11 h-11 bg-gradient-to-b from-amber-200 to-amber-300 rounded-full border border-amber-400/80 relative flex flex-col items-center justify-center shadow-md -mt-1 z-10">
+              <div id="captain-eyes" class="flex space-x-2.5 mt-0.5">
+                <div class="w-1.5 h-2 bg-slate-950 rounded-full shadow-xs"></div>
+                <div class="w-1.5 h-2 bg-slate-950 rounded-full shadow-xs"></div>
+              </div>
+              <div class="absolute bottom-3 left-1 w-2.5 h-1.5 bg-rose-400/80 rounded-full"></div>
+              <div class="absolute bottom-3 right-1 w-2.5 h-1.5 bg-rose-400/80 rounded-full"></div>
+              <div class="absolute bottom-0 w-8 h-4 bg-amber-100 rounded-b-xl border-t border-amber-400 flex items-center justify-center shadow-xs">
+                <div class="w-3 h-1 bg-amber-900 rounded-full"></div>
+              </div>
+            </div>
+
+            <!-- Sailor Torso -->
+            <div class="w-14 h-11 bg-gradient-to-b from-orange-500 via-orange-600 to-orange-700 rounded-t-2xl border-2 border-orange-800 relative flex items-center justify-center shadow-md z-10">
+              <div class="w-4 h-full bg-amber-100/60 border-x border-orange-800/40"></div>
+              <div class="absolute -top-1 w-6 h-2 bg-sky-900 rounded-full border border-sky-600"></div>
+            </div>
+          </div>
+
+          <!-- Front Gunwale & Hull Planking -->
+          <div class="absolute bottom-2 left-2 w-56 h-12 z-20 pointer-events-none overflow-hidden rounded-b-[2.8rem] border-2 border-amber-950 bg-gradient-to-b from-amber-800 via-amber-900 to-amber-950 shadow-2xl flex flex-col justify-between px-4 py-1.5">
+            <div class="w-full h-1 bg-amber-700/80 rounded-full shadow-xs"></div>
+            <div class="w-full h-1 bg-amber-600/50 rounded-full"></div>
+            <div class="w-full h-1 bg-black/40 rounded-full"></div>
+            <div class="self-end text-[9px] font-black text-amber-300/90 tracking-widest uppercase drop-shadow">
+              NAUTILUS II
+            </div>
+          </div>
+
+          <!-- Lifebuoy Ring -->
+          <div class="absolute bottom-4 left-4 z-30 w-8 h-8 rounded-full border-4 border-rose-500 bg-white shadow-lg flex items-center justify-center pointer-events-none">
+            <div class="w-3.5 h-3.5 rounded-full bg-amber-950"></div>
+          </div>
+
+          <!-- Flexible Fishing Rod -->
+          <div id="fishing-rod-element" class="absolute bottom-8 right-2 z-30 pointer-events-none transition-transform duration-300">
+            <svg width="100" height="110" viewBox="0 0 100 110" fill="none" class="overflow-visible">
+              <path d="M 12 85 Q 26 76 34 68" stroke="#EA580C" stroke-width="7" stroke-linecap="round" />
+              <circle cx="34" cy="68" r="4.5" fill="#FBBF24" stroke="#B45309" stroke-width="1.2" />
+              <line x1="22" y1="84" x2="38" y2="62" stroke="#78350F" stroke-width="5.5" stroke-linecap="round" />
+              <circle cx="28" cy="74" r="5.5" fill="#334155" stroke="#94A3B8" stroke-width="1.5" />
+              <line x1="28" y1="74" x2="25" y2="70" stroke="#CBD5E1" stroke-width="2" stroke-linecap="round" />
+              <path id="rod-curved-blank" d="M 38 62 Q 65 35 92 12" stroke="#EA580C" stroke-width="3.5" stroke-linecap="round" />
+              <circle cx="52" cy="48" r="2" fill="#FDE047" stroke="#78350F" stroke-width="0.8" />
+              <circle cx="70" cy="30" r="1.8" fill="#FDE047" stroke="#78350F" stroke-width="0.8" />
+              <circle id="rod-tip-marker" cx="92" cy="12" r="3.5" fill="#EF4444" stroke="#FFFFFF" stroke-width="1.5" class="animate-pulse" />
+            </svg>
+          </div>
+
+          <!-- Gentle Water Ripples under the Boat -->
+          <div class="absolute -bottom-2 left-6 w-48 h-3 bg-white/25 rounded-full blur-[2px] pointer-events-none"></div>
+        </div>
+      </div>
+
+      <!-- Animated Water Surface Waves -->
+      <div class="absolute bottom-0 w-full h-8 sm:h-11 overflow-hidden pointer-events-none z-20">
+        <svg class="absolute bottom-0 w-[200%] h-7 sm:h-9 text-cyan-600/40 fill-current wave-surface-slow" viewBox="0 0 1200 120" preserveAspectRatio="none">
+          <path d="M0,25 C200,65 400,-15 600,35 C800,85 1000,-10 1200,35 L1200,120 L0,120 Z" />
+        </svg>
+        <svg class="absolute bottom-0 w-[200%] h-6 sm:h-8 text-sky-300/50 fill-current wave-surface" viewBox="0 0 1200 120" preserveAspectRatio="none">
+          <path d="M0,15 C150,75 350,-20 500,35 C650,95 900,5 1200,35 L1200,120 L0,120 Z" />
+        </svg>
+      </div>
+
+      <!-- Floating Signboard with Target Word Challenge (Fluid Responsive) -->
+      <div class="absolute top-1 sm:top-2 right-1.5 sm:right-6 md:right-8 z-30 max-w-[190px] xs:max-w-[240px] sm:max-w-sm md:max-w-md w-full">
+        <div class="relative bg-gradient-to-b from-amber-800 via-amber-900 to-amber-950 p-2 sm:p-3.5 rounded-xl sm:rounded-2xl border-2 sm:border-4 border-amber-950 shadow-[0_15px_30px_rgba(0,0,0,0.6)] text-center">
+          <div class="absolute -top-3 sm:-top-4 left-4 sm:left-8 w-1 sm:w-1.5 h-4 sm:h-6 bg-amber-950 rounded-full shadow"></div>
+          <div class="absolute -top-3 sm:-top-4 right-4 sm:right-8 w-1 sm:w-1.5 h-4 sm:h-6 bg-amber-950 rounded-full shadow"></div>
+
+          <div class="flex items-center justify-between mb-1">
+            <span id="round-indicator" class="text-[9px] sm:text-[11px] font-black uppercase tracking-wider text-amber-200 flex items-center gap-0.5 sm:gap-1">
+              <span>🎯</span> Target #1
+            </span>
+            <button id="speak-btn" class="p-1 sm:p-1.5 px-2 sm:px-3 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-black transition flex items-center justify-center space-x-1 bg-amber-900 hover:bg-amber-800 text-amber-100 border border-amber-600 active:scale-95 shadow-md">
+              <span class="text-xs sm:text-sm">🔊</span>
+              <span class="hidden xs:inline">Listen</span>
+            </button>
+          </div>
+
+          <div class="bg-amber-950/90 rounded-lg sm:rounded-xl py-1.5 sm:py-2 px-2 sm:px-3.5 border border-amber-700/60 shadow-inner flex items-center space-x-1.5 sm:space-x-3 text-left">
+            <span id="target-emoji" class="text-xl sm:text-3xl md:text-4xl filter drop-shadow flex-shrink-0">🐬</span>
+            <div class="flex-1 min-w-0">
+              <p id="target-clue" class="text-[9px] sm:text-[11px] text-amber-200 font-medium leading-tight line-clamp-1 sm:line-clamp-2">
+                Intelligent marine mammal known for agility and playful leaps.
+              </p>
+              <p class="text-xs sm:text-sm md:text-base font-black text-yellow-300 tracking-wide sm:tracking-wider mt-0.5 truncate">
+                Catch: <span id="target-word-text" class="underline decoration-yellow-400 font-black text-white">DOLPHIN</span>!
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Underwater Ocean Body with Realistic Marine Tank -->
+    <div id="ocean-body" class="relative flex-1 w-full overflow-hidden sm:overflow-visible">
+      <!-- Water Surface Entry Ripple Container -->
+      <div id="surface-ripples-container" class="absolute inset-0 pointer-events-none z-20"></div>
+
+      <!-- Swimming Fish Container -->
+      <div id="fish-tank" class="absolute inset-0 z-20"></div>
+
+      <!-- Golden Sandy Ocean Floor (Undulating Sand Dunes, Ripples, Pebbles & Shells) -->
+      <div class="absolute bottom-0 left-0 right-0 h-10 sm:h-14 md:h-16 pointer-events-none z-10 overflow-hidden">
+        <svg class="absolute bottom-0 w-full h-full overflow-visible" viewBox="0 0 1400 90" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="backSandDuneGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#9a672b" />
+              <stop offset="45%" stop-color="#784918" />
+              <stop offset="100%" stop-color="#3c2009" />
+            </linearGradient>
+            <linearGradient id="frontSandDuneGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#d8a45b" />
+              <stop offset="25%" stop-color="#be8a42" />
+              <stop offset="70%" stop-color="#8a561f" />
+              <stop offset="100%" stop-color="#46250a" />
+            </linearGradient>
+            <linearGradient id="sandCrestHighlight" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#fef08a" stop-opacity="0.3" />
+              <stop offset="35%" stop-color="#fed7aa" stop-opacity="0.55" />
+              <stop offset="70%" stop-color="#fde047" stop-opacity="0.35" />
+              <stop offset="100%" stop-color="#fbbf24" stop-opacity="0.45" />
+            </linearGradient>
+          </defs>
+          <!-- Deep background sand dune -->
+          <path d="M0,38 Q220,14 480,30 T980,18 Q1220,34 1400,24 L1400,90 L0,90 Z" fill="url(#backSandDuneGrad)" />
+          <!-- Foreground natural sand dunes -->
+          <path d="M0,50 Q180,26 400,44 Q620,60 850,34 Q1080,16 1260,38 Q1340,48 1400,42 L1400,90 L0,90 Z" fill="url(#frontSandDuneGrad)" />
+          <!-- Caustic sunlight shimmer on sand crests -->
+          <path d="M0,50 Q180,26 400,44 Q620,60 850,34 Q1080,16 1260,38 Q1340,48 1400,42" stroke="url(#sandCrestHighlight)" stroke-width="2.8" fill="none" opacity="0.85" />
+          <!-- Smooth sand ripples and sediment pebbles -->
+          <ellipse cx="260" cy="68" rx="8" ry="3.5" fill="#5c3411" opacity="0.7" />
+          <ellipse cx="258" cy="67" rx="6" ry="2.2" fill="#c4934e" />
+          <ellipse cx="610" cy="72" rx="10" ry="4" fill="#4d2b0c" opacity="0.7" />
+          <ellipse cx="608" cy="71" rx="7.5" ry="2.5" fill="#d5a560" />
+          <ellipse cx="920" cy="64" rx="7" ry="3" fill="#4a290b" opacity="0.7" />
+          <ellipse cx="919" cy="63" rx="5" ry="2" fill="#ba8945" />
+          <ellipse cx="1140" cy="74" rx="9" ry="3.5" fill="#522f0f" opacity="0.65" />
+          <ellipse cx="1138" cy="73" rx="6.5" ry="2" fill="#cb9b54" />
+          <!-- Small sea shells resting in the sand -->
+          <path d="M430,66 C426,62 436,58 440,63 C444,68 434,70 430,66 Z" fill="#ffedd5" stroke="#c2410c" stroke-width="0.8" />
+          <path d="M780,72 C776,68 786,65 789,69 C792,73 784,75 780,72 Z" fill="#fed7aa" stroke="#9a3412" stroke-width="0.8" />
+        </svg>
+      </div>
+
+      <!-- Seafloor Ecosystem: Swaying Kelp, Corals, Sea Shells and Starfish -->
+      <div class="absolute bottom-0 w-full h-24 sm:h-32 md:h-36 pointer-events-none flex items-end justify-between px-2 sm:px-8 z-15">
+        <!-- Dense Realistic Kelp Forest Left -->
+        <div class="flex space-x-1 sm:space-x-4 items-end">
+          <svg viewBox="0 0 110 160" class="w-16 sm:w-24 md:w-28 h-24 sm:h-36 md:h-40 overflow-visible kelp-sway-left drop-shadow-md">
+            <path d="M 50 160 Q 48 110 52 75 Q 56 45 50 30" stroke="#064E3B" stroke-width="4.5" fill="none" stroke-linecap="round" />
+            <path d="M 50 160 Q 48 110 52 75 Q 56 45 50 30" stroke="#10B981" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.7" />
+            <circle cx="50" cy="30" r="7.5" fill="#047857" stroke="#34D399" stroke-width="1.5" />
+            <circle cx="48" cy="27" r="2.5" fill="#A7F3D0" opacity="0.6" />
+            <path d="M 50 25 C 42 12, 25 8, 8 2 C 22 18, 38 22, 46 28 Z" fill="#059669" opacity="0.88" />
+            <path d="M 52 24 C 62 10, 80 5, 102 0 C 88 16, 70 22, 54 28 Z" fill="#10B981" opacity="0.85" />
+            <path d="M 47 28 C 30 20, 15 28, 4 38 C 18 36, 32 32, 45 30 Z" fill="#047857" opacity="0.8" />
+            <path d="M 53 28 C 70 20, 88 26, 106 35 C 90 34, 72 32, 55 30 Z" fill="#059669" opacity="0.85" />
+          </svg>
+          
+          <!-- Realistic Sea Anemone -->
+          <div class="relative w-10 sm:w-16 h-14 sm:h-20 flex items-end">
+            <svg viewBox="0 0 80 90" class="w-full h-full overflow-visible">
+              <path d="M 28 90 Q 25 65 30 52 Q 40 48 50 52 Q 55 65 52 90 Z" fill="#9D174D" stroke="#BE185D" stroke-width="1.5" />
+              <path d="M 30 52 Q 18 38 12 18" stroke="#F43F5E" stroke-width="3" stroke-linecap="round" fill="none" class="anemone-tentacle" />
+              <path d="M 34 50 Q 25 30 24 10" stroke="#FB7185" stroke-width="2.8" stroke-linecap="round" fill="none" class="anemone-tentacle" style="animation-delay: -0.4s;" />
+              <path d="M 38 48 Q 36 25 38 6" stroke="#FDA4AF" stroke-width="2.8" stroke-linecap="round" fill="none" class="anemone-tentacle" style="animation-delay: -0.8s;" />
+              <path d="M 42 48 Q 45 25 44 8" stroke="#FB7185" stroke-width="2.8" stroke-linecap="round" fill="none" class="anemone-tentacle" style="animation-delay: -1.2s;" />
+              <path d="M 46 50 Q 55 30 58 12" stroke="#F43F5E" stroke-width="2.8" stroke-linecap="round" fill="none" class="anemone-tentacle" style="animation-delay: -1.6s;" />
+              <path d="M 50 52 Q 62 38 70 20" stroke="#E11D48" stroke-width="3" stroke-linecap="round" fill="none" class="anemone-tentacle" style="animation-delay: -2s;" />
+            </svg>
+          </div>
+
+          <!-- CORAL 1: Vibrant Branching Staghorn Coral (Coral Ramificado) -->
+          <div class="relative w-12 sm:w-16 md:w-20 h-16 sm:h-22 md:h-26 flex items-end drop-shadow-[0_4px_10px_rgba(225,29,72,0.45)]">
+            <svg viewBox="0 0 100 120" class="w-full h-full overflow-visible">
+              <defs>
+                <linearGradient id="staghornCoralGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+                  <stop offset="0%" stop-color="#881337" />
+                  <stop offset="35%" stop-color="#E11D48" />
+                  <stop offset="75%" stop-color="#FB7185" />
+                  <stop offset="100%" stop-color="#FFE4E6" />
+                </linearGradient>
+              </defs>
+              <!-- Base trunk anchored in sand -->
+              <path d="M 40 120 Q 42 95 44 80 Q 46 65 42 50 L 58 50 Q 55 70 56 85 Q 58 100 60 120 Z" fill="url(#staghornCoralGrad)" />
+              <!-- Left lower branch -->
+              <path d="M 43 82 C 30 76 16 68 12 48 C 10 38 18 34 22 42 C 26 50 33 60 45 68 Z" fill="url(#staghornCoralGrad)" />
+              <circle cx="16" cy="40" r="4.5" fill="#FFE4E6" />
+              <circle cx="16" cy="40" r="2.2" fill="#FB7185" />
+              <!-- Left side sub-branchlet -->
+              <path d="M 22 52 C 20 40 24 28 30 18 C 34 12 40 16 38 24 C 34 32 30 42 27 56 Z" fill="url(#staghornCoralGrad)" />
+              <circle cx="34" cy="18" r="4" fill="#FFE4E6" />
+              <circle cx="34" cy="18" r="2" fill="#FDA4AF" />
+              <!-- Center upright branch -->
+              <path d="M 44 54 C 44 38 42 24 46 8 C 48 2 54 2 56 8 C 58 24 56 38 56 54 Z" fill="url(#staghornCoralGrad)" />
+              <circle cx="51" cy="6" r="5" fill="#FFE4E6" />
+              <circle cx="51" cy="6" r="2.5" fill="#F43F5E" />
+              <!-- Right side secondary branch -->
+              <path d="M 55 68 C 66 60 76 52 82 38 C 86 30 92 34 88 42 C 82 56 70 66 56 78 Z" fill="url(#staghornCoralGrad)" />
+              <circle cx="86" cy="36" r="4.5" fill="#FFE4E6" />
+              <circle cx="86" cy="36" r="2.2" fill="#FB7185" />
+              <!-- Right upright sub-tip -->
+              <path d="M 68 56 C 72 44 70 28 66 16 C 64 10 72 8 74 14 C 80 26 78 44 72 58 Z" fill="url(#staghornCoralGrad)" />
+              <circle cx="70" cy="12" r="4" fill="#FFE4E6" />
+              <circle cx="70" cy="12" r="2" fill="#FDA4AF" />
+              <!-- Organic polyp dots along branches -->
+              <circle cx="48" cy="35" r="1.8" fill="#FFF1F2" opacity="0.8" />
+              <circle cx="54" cy="45" r="1.8" fill="#FFF1F2" opacity="0.8" />
+              <circle cx="34" cy="42" r="1.5" fill="#FFF1F2" opacity="0.8" />
+              <circle cx="68" cy="40" r="1.5" fill="#FFF1F2" opacity="0.8" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- Coral Reef Starfish & Sea Fan Center -->
+        <div class="flex items-end space-x-3 sm:space-x-8 pb-1">
+          <!-- Starfish -->
+          <div class="relative w-8 sm:w-12 h-8 sm:h-12 flex items-center justify-center transform hover:scale-110 transition-transform">
+            <svg viewBox="0 0 100 100" class="w-full h-full overflow-visible drop-shadow-[0_4px_8px_rgba(0,0,0,0.6)]">
+              <defs>
+                <linearGradient id="starfishGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#F97316" />
+                  <stop offset="50%" stop-color="#EA580C" />
+                  <stop offset="100%" stop-color="#9A3412" />
+                </linearGradient>
+              </defs>
+              <path d="M 50 5 L 59 34 L 89 27 L 69 49 L 85 75 L 56 65 L 42 94 L 37 64 L 9 68 L 29 46 L 12 22 L 41 33 Z" fill="url(#starfishGrad)" stroke="#C2410C" stroke-width="1.8" stroke-linejoin="round" />
+              <circle cx="50" cy="50" r="3" fill="#FDE047" />
+            </svg>
+          </div>
+
+          <!-- Gorgonian Sea Fan -->
+          <div class="w-14 sm:w-20 md:w-24 h-20 sm:h-28 seafan-sway opacity-95 flex items-end">
+            <svg viewBox="0 0 90 120" class="w-full h-full overflow-visible">
+              <defs>
+                <linearGradient id="seafanGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+                  <stop offset="0%" stop-color="#4C1D95" />
+                  <stop offset="50%" stop-color="#7C3AED" />
+                  <stop offset="100%" stop-color="#C084FC" />
+                </linearGradient>
+              </defs>
+              <path d="M 45 120 Q 44 85 30 60 Q 18 38 8 20 M 45 95 Q 52 68 70 42 Q 80 25 84 12 M 45 75 Q 43 45 42 16 M 45 105 Q 26 80 18 45 M 45 88 Q 62 65 72 38" stroke="url(#seafanGrad)" stroke-width="2.5" stroke-linecap="round" fill="none" />
+              <circle cx="8" cy="20" r="2.5" fill="#E879F9" />
+              <circle cx="84" cy="12" r="2.5" fill="#E879F9" />
+            </svg>
+          </div>
+
+          <!-- CORAL 2: Vibrant Tubular Cup / Organ-Pipe Coral (Coral Tubo) -->
+          <div class="relative w-11 sm:w-15 md:w-18 h-13 sm:h-18 md:h-22 flex items-end drop-shadow-[0_4px_10px_rgba(245,158,11,0.5)]">
+            <svg viewBox="0 0 90 100" class="w-full h-full overflow-visible">
+              <defs>
+                <linearGradient id="tubeCoralGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+                  <stop offset="0%" stop-color="#78350F" />
+                  <stop offset="30%" stop-color="#D97706" />
+                  <stop offset="70%" stop-color="#F59E0B" />
+                  <stop offset="100%" stop-color="#FDE047" />
+                </linearGradient>
+                <linearGradient id="tubeLipGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#10B981" />
+                  <stop offset="50%" stop-color="#6EE7B7" />
+                  <stop offset="100%" stop-color="#059669" />
+                </linearGradient>
+              </defs>
+              <!-- Left Tube Column -->
+              <path d="M 12 100 L 16 52 Q 25 50 34 52 L 36 100 Z" fill="url(#tubeCoralGrad)" stroke="#B45309" stroke-width="1.2" />
+              <ellipse cx="25" cy="52" rx="9" ry="4" fill="#065F46" stroke="url(#tubeLipGrad)" stroke-width="1.6" />
+              <ellipse cx="25" cy="52" rx="5" ry="2" fill="#022C22" />
+              <circle cx="25" cy="52" r="1.5" fill="#A7F3D0" />
+              <!-- Back Tall Tube Column -->
+              <path d="M 32 100 L 36 32 Q 48 30 58 32 L 60 100 Z" fill="url(#tubeCoralGrad)" stroke="#B45309" stroke-width="1.2" />
+              <ellipse cx="47" cy="32" rx="11" ry="4.5" fill="#065F46" stroke="url(#tubeLipGrad)" stroke-width="1.8" />
+              <ellipse cx="47" cy="32" rx="6.5" ry="2.2" fill="#022C22" />
+              <circle cx="47" cy="32" r="1.8" fill="#A7F3D0" />
+              <!-- Right Middle Tube Column -->
+              <path d="M 54 100 L 58 46 Q 68 44 76 46 L 80 100 Z" fill="url(#tubeCoralGrad)" stroke="#B45309" stroke-width="1.2" />
+              <ellipse cx="67" cy="46" rx="9" ry="3.8" fill="#065F46" stroke="url(#tubeLipGrad)" stroke-width="1.6" />
+              <ellipse cx="67" cy="46" rx="5" ry="2" fill="#022C22" />
+              <circle cx="67" cy="46" r="1.5" fill="#A7F3D0" />
+              <!-- Foreground Small Sprout Tube -->
+              <path d="M 30 100 L 32 68 Q 40 66 48 68 L 50 100 Z" fill="url(#tubeCoralGrad)" stroke="#92400E" stroke-width="1.2" />
+              <ellipse cx="40" cy="68" rx="8" ry="3.2" fill="#065F46" stroke="url(#tubeLipGrad)" stroke-width="1.5" />
+              <ellipse cx="40" cy="68" rx="4.5" ry="1.6" fill="#022C22" />
+              <circle cx="40" cy="68" r="1.2" fill="#A7F3D0" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- Dense Lush Kelp Right -->
+        <div class="flex space-x-2 items-end">
+          <svg viewBox="0 0 100 150" class="w-16 sm:w-24 md:w-28 h-24 sm:h-36 md:h-40 overflow-visible kelp-sway-right drop-shadow-md">
+            <path d="M 50 150 Q 54 105 48 70 Q 42 40 50 25" stroke="#064E3B" stroke-width="4.5" fill="none" stroke-linecap="round" />
+            <path d="M 50 150 Q 54 105 48 70 Q 42 40 50 25" stroke="#10B981" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.7" />
+            <circle cx="50" cy="25" r="7" fill="#047857" stroke="#34D399" stroke-width="1.5" />
+            <path d="M 50 20 C 40 8, 20 5, 5 0 C 18 15, 34 18, 46 22 Z" fill="#059669" opacity="0.88" />
+            <path d="M 52 19 C 64 6, 82 2, 98 -3 C 85 12, 68 18, 54 22 Z" fill="#10B981" opacity="0.85" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Particle Splashing & Bubble Burst Layer -->
+      <div id="particles-layer" class="absolute inset-0 pointer-events-none z-30"></div>
+
+      <!-- Streak 3+ Fishing Gear Unlock Toast Notification -->
+      <div id="gear-unlock-toast" class="fixed top-12 left-1/2 -translate-x-1/2 z-50 pointer-events-none hidden">
+        <div class="bg-gradient-to-r from-amber-500/95 via-yellow-500/95 to-amber-600/95 text-slate-950 px-4 sm:px-6 py-2 sm:py-3 rounded-2xl shadow-[0_10px_35px_rgba(245,158,11,0.6)] border-2 border-yellow-200 flex items-center space-x-3 backdrop-blur-md">
+          <div id="gear-toast-icon" class="text-2xl sm:text-3xl gear-unlock-pulse">🪝</div>
+          <div>
+            <div class="flex items-center space-x-1 text-[10px] font-black uppercase tracking-wider text-amber-950">
+              <span>🔥 3x STREAK REWARD</span>
+              <span>•</span>
+              <span id="gear-toast-rarity" class="bg-amber-950/20 px-1.5 py-0.2 rounded-md">LEGENDARY</span>
+            </div>
+            <div id="gear-toast-name" class="text-xs sm:text-sm font-black text-slate-950">
+              Golden Siren Lure
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feedback HUD Banner (Hidden) -->
+      <div id="feedback-banner" class="hidden pointer-events-none" style="display: none !important;">
+        <div id="feedback-content" class="px-6 py-2.5 rounded-2xl font-black text-xs sm:text-sm shadow-2xl flex items-center space-x-2.5 backdrop-blur-md border">
+          <span id="feedback-icon" class="text-base">✨</span>
+          <span id="feedback-message"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Victory Celebration Modal -->
+    <div id="victory-modal" class="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-lg flex items-center justify-center p-4 hidden overflow-hidden">
+      <!-- Radiant Golden Sunburst Behind the Treasure -->
+      <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div class="w-[750px] h-[750px] bg-[radial-gradient(circle,_rgba(250,204,21,0.22)_0%,_rgba(234,88,12,0.1)_45%,_transparent_70%)] treasure-sunburst"></div>
+      </div>
+
+      <!-- Shower of Exploding Golden Doubloons -->
+      <div id="treasure-coins-container" class="absolute inset-0 pointer-events-none z-30"></div>
+
+      <div class="relative w-full max-w-xl bg-gradient-to-b from-[#14233c] via-[#091527] to-[#040913] rounded-3xl border-4 border-yellow-400/90 p-6 sm:p-8 text-center shadow-[0_25px_70px_rgba(0,0,0,0.95)] text-white z-20">
+        <!-- Floating Trophies and English Victory Greeting -->
+        <div class="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-yellow-500/20 border border-yellow-400/60 text-yellow-300 text-xs font-black uppercase tracking-widest mb-2 shadow-inner">
+          <span>✨</span>
+          <span>LEGENDARY EXPEDITION COMPLETE</span>
+          <span>✨</span>
+        </div>
+
+        <h2 class="text-3xl sm:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-amber-300 to-yellow-500 tracking-wide uppercase drop-shadow-sm">
+          Congratulations, Captain!
+        </h2>
+        <p class="text-xs sm:text-sm text-sky-200 mt-1 max-w-md mx-auto font-medium">
+          You've conquered the ocean depths and unlocked the legendary Galleon's Sunken Treasure!
+        </p>
+
+        <!-- Hyper-Realistic Vector Sunken Treasure Chest with Overflowing Gold Coins & Gems -->
+        <div class="relative my-4 flex items-center justify-center">
+          <svg viewBox="0 0 420 250" class="w-full max-w-[340px] sm:max-w-[400px] h-auto overflow-visible filter drop-shadow-[0_18px_25px_rgba(0,0,0,0.85)]">
+            <defs>
+              <!-- Rich Mahogany Planks Gradient -->
+              <linearGradient id="chestWoodGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#78350F" />
+                <stop offset="40%" stop-color="#451A03" />
+                <stop offset="100%" stop-color="#240E02" />
+              </linearGradient>
+
+              <!-- Solid Brass Reinforcement Trims -->
+              <linearGradient id="brassGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#B45309" />
+                <stop offset="35%" stop-color="#FBBF24" />
+                <stop offset="65%" stop-color="#FDE68A" />
+                <stop offset="100%" stop-color="#92400E" />
+              </linearGradient>
+
+              <!-- Iridescent Golden Coin Metallic Gradient -->
+              <linearGradient id="goldCoinGrad" x1="20%" y1="0%" x2="80%" y2="100%">
+                <stop offset="0%" stop-color="#FFFBEB" />
+                <stop offset="30%" stop-color="#FDE047" />
+                <stop offset="70%" stop-color="#F59E0B" />
+                <stop offset="100%" stop-color="#B45309" />
+              </linearGradient>
+
+              <radialGradient id="chestInteriorGlow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#FEF08A" stop-opacity="0.9" />
+                <stop offset="45%" stop-color="#F59E0B" stop-opacity="0.6" />
+                <stop offset="100%" stop-color="#B45309" stop-opacity="0" />
+              </radialGradient>
+            </defs>
+
+            <!-- Chest Base Interior Dark Depth -->
+            <path d="M 65 110 L 355 110 L 375 220 L 45 220 Z" fill="#1C0A00" />
+
+            <!-- Golden Interior Aura / Core Glow -->
+            <ellipse cx="210" cy="115" rx="140" ry="40" fill="url(#chestInteriorGlow)" />
+
+            <!-- Massive Mountain of Gold Doubloons and Jewels Spilling Out -->
+            <g class="coins-gleam">
+              <!-- Back tier coins -->
+              <ellipse cx="140" cy="110" rx="18" ry="11" fill="url(#goldCoinGrad)" stroke="#B45309" stroke-width="1.2" />
+              <ellipse cx="165" cy="104" rx="19" ry="12" fill="url(#goldCoinGrad)" stroke="#B45309" stroke-width="1.2" />
+              <ellipse cx="195" cy="100" rx="20" ry="12" fill="url(#goldCoinGrad)" stroke="#B45309" stroke-width="1.2" />
+              <ellipse cx="225" cy="98" rx="20" ry="12" fill="url(#goldCoinGrad)" stroke="#B45309" stroke-width="1.2" />
+              <ellipse cx="255" cy="103" rx="19" ry="12" fill="url(#goldCoinGrad)" stroke="#B45309" stroke-width="1.2" />
+              <ellipse cx="280" cy="108" rx="18" ry="11" fill="url(#goldCoinGrad)" stroke="#B45309" stroke-width="1.2" />
+
+              <!-- Cascading Pearl Necklace -->
+              <path d="M 120 120 Q 155 160 190 135" stroke="#FFFFFF" stroke-width="5.5" stroke-linecap="round" stroke-dasharray="1 8" fill="none" opacity="0.95" />
+
+              <!-- Middle tier coins piled high -->
+              <ellipse cx="120" cy="118" rx="21" ry="13" fill="url(#goldCoinGrad)" stroke="#B45309" stroke-width="1.2" />
+              <ellipse cx="150" cy="114" rx="22" ry="13" fill="url(#goldCoinGrad)" stroke="#B45309" stroke-width="1.2" />
+              <ellipse cx="180" cy="108" rx="23" ry="14" fill="url(#goldCoinGrad)" stroke="#B45309" stroke-width="1.2" />
+              <ellipse cx="210" cy="106" rx="24" ry="14" fill="url(#goldCoinGrad)" stroke="#B45309" stroke-width="1.2" />
+              <ellipse cx="240" cy="109" rx="23" ry="14" fill="url(#goldCoinGrad)" stroke="#B45309" stroke-width="1.2" />
+              <ellipse cx="270" cy="115" rx="22" ry="13" fill="url(#goldCoinGrad)" stroke="#B45309" stroke-width="1.2" />
+              <ellipse cx="300" cy="119" rx="21" ry="13" fill="url(#goldCoinGrad)" stroke="#B45309" stroke-width="1.2" />
+
+              <!-- Faceted Royal Gemstones nestled in gold -->
+              <!-- Ruby -->
+              <polygon points="175,102 186,95 198,102 192,114 180,114" fill="#E11D48" stroke="#FFE4E6" stroke-width="1.2" />
+              <!-- Emerald -->
+              <polygon points="230,100 242,94 252,102 245,112 235,112" fill="#10B981" stroke="#D1FAE5" stroke-width="1.2" />
+              <!-- Sapphire -->
+              <polygon points="204,112 214,105 224,112 219,122 209,122" fill="#3B82F6" stroke="#DBEAFE" stroke-width="1.2" />
+
+              <!-- Foreground overflowing lip coins -->
+              <ellipse cx="105" cy="126" rx="21" ry="13" fill="url(#goldCoinGrad)" stroke="#B45309" stroke-width="1.2" />
+              <ellipse cx="135" cy="124" rx="22" ry="13" fill="url(#goldCoinGrad)" stroke="#B45309" stroke-width="1.2" />
+              <ellipse cx="165" cy="120" rx="23" ry="14" fill="url(#goldCoinGrad)" stroke="#B45309" stroke-width="1.2" />
+              <ellipse cx="195" cy="118" rx="23" ry="14" fill="url(#goldCoinGrad)" stroke="#B45309" stroke-width="1.2" />
+              <ellipse cx="225" cy="119" rx="23" ry="14" fill="url(#goldCoinGrad)" stroke="#B45309" stroke-width="1.2" />
+              <ellipse cx="255" cy="122" rx="22" ry="13" fill="url(#goldCoinGrad)" stroke="#B45309" stroke-width="1.2" />
+              <ellipse cx="285" cy="125" rx="22" ry="13" fill="url(#goldCoinGrad)" stroke="#B45309" stroke-width="1.2" />
+              <ellipse cx="315" cy="128" rx="20" ry="12" fill="url(#goldCoinGrad)" stroke="#B45309" stroke-width="1.2" />
+
+              <!-- Coins tumbling down the front rim -->
+              <ellipse cx="145" cy="136" rx="19" ry="12" fill="url(#goldCoinGrad)" stroke="#B45309" stroke-width="1.2" />
+              <ellipse cx="180" cy="132" rx="20" ry="12" fill="url(#goldCoinGrad)" stroke="#B45309" stroke-width="1.2" />
+              <ellipse cx="215" cy="131" rx="21" ry="13" fill="url(#goldCoinGrad)" stroke="#B45309" stroke-width="1.2" />
+              <ellipse cx="248" cy="134" rx="20" ry="12" fill="url(#goldCoinGrad)" stroke="#B45309" stroke-width="1.2" />
+              <ellipse cx="280" cy="137" rx="19" ry="12" fill="url(#goldCoinGrad)" stroke="#B45309" stroke-width="1.2" />
+            </g>
+
+            <!-- Heavy Mahogany Chest Base Hull -->
+            <path d="M 60 126 L 360 126 L 380 226 L 40 226 Z" fill="url(#chestWoodGrad)" stroke="#1F0A00" stroke-width="3" />
+
+            <!-- Vertical Planks Grooves -->
+            <line x1="120" y1="126" x2="110" y2="226" stroke="#1F0A00" stroke-width="2.5" opacity="0.75" />
+            <line x1="180" y1="126" x2="175" y2="226" stroke="#1F0A00" stroke-width="2.5" opacity="0.75" />
+            <line x1="240" y1="126" x2="245" y2="226" stroke="#1F0A00" stroke-width="2.5" opacity="0.75" />
+            <line x1="300" y1="126" x2="310" y2="226" stroke="#1F0A00" stroke-width="2.5" opacity="0.75" />
+
+            <!-- Heavy Brass Reinforcing Straps with Round Rivets -->
+            <path d="M 68 126 L 94 126 L 78 226 L 52 226 Z" fill="url(#brassGrad)" stroke="#78350F" stroke-width="1.8" />
+            <path d="M 188 126 L 232 126 L 230 226 L 190 226 Z" fill="url(#brassGrad)" stroke="#78350F" stroke-width="1.8" />
+            <path d="M 326 126 L 352 126 L 368 226 L 342 226 Z" fill="url(#brassGrad)" stroke="#78350F" stroke-width="1.8" />
+
+            <!-- Brass Rivets -->
+            <circle cx="82" cy="140" r="3.2" fill="#451A03" /><circle cx="81" cy="139" r="2.2" fill="#FDE047" />
+            <circle cx="74" cy="180" r="3.2" fill="#451A03" /><circle cx="73" cy="179" r="2.2" fill="#FDE047" />
+            <circle cx="66" cy="216" r="3.2" fill="#451A03" /><circle cx="65" cy="215" r="2.2" fill="#FDE047" />
+
+            <circle cx="338" cy="140" r="3.2" fill="#451A03" /><circle cx="337" cy="139" r="2.2" fill="#FDE047" />
+            <circle cx="346" cy="180" r="3.2" fill="#451A03" /><circle cx="345" cy="179" r="2.2" fill="#FDE047" />
+            <circle cx="354" cy="216" r="3.2" fill="#451A03" /><circle cx="353" cy="215" r="2.2" fill="#FDE047" />
+
+            <!-- Center Heavy Lock Escutcheon & Skeleton Keyhole -->
+            <path d="M 194 140 L 226 140 L 222 176 L 198 176 Z" fill="url(#brassGrad)" stroke="#78350F" stroke-width="2" />
+            <circle cx="210" cy="154" r="5" fill="#1C0A00" />
+            <polygon points="208,154 212,154 214,167 206,167" fill="#1C0A00" />
+
+            <!-- Animated Vaulted Chest Lid (Swings Open in Realistic Perspective) -->
+            <g id="animated-chest-lid" class="animate-chest-lid">
+              <!-- Lid Outer Dome -->
+              <path d="M 45 88 C 45 42, 375 42, 375 88 L 360 124 L 60 124 Z" fill="url(#chestWoodGrad)" stroke="#1F0A00" stroke-width="2.5" />
+              <!-- Lid Brass Straps -->
+              <path d="M 72 88 C 72 56, 92 56, 92 88 L 94 124 L 74 124 Z" fill="url(#brassGrad)" stroke="#78350F" stroke-width="1.5" />
+              <path d="M 192 86 C 192 48, 228 48, 228 86 L 230 124 L 190 124 Z" fill="url(#brassGrad)" stroke="#78350F" stroke-width="1.5" />
+              <path d="M 328 88 C 328 56, 348 56, 348 88 L 346 124 L 326 124 Z" fill="url(#brassGrad)" stroke="#78350F" stroke-width="1.5" />
+              <!-- Lid Brass Handle -->
+              <path d="M 180 50 Q 210 32 240 50" stroke="url(#brassGrad)" stroke-width="6" stroke-linecap="round" fill="none" />
+            </g>
+          </svg>
+        </div>
+
+        <!-- Rewards Summary Grid -->
+        <div class="grid grid-cols-3 gap-2.5 mb-5 text-left">
+          <div class="bg-slate-900/90 p-3 rounded-2xl border border-yellow-500/40 shadow-inner flex items-center space-x-2.5">
+            <span class="text-2xl sm:text-3xl">🪙</span>
+            <div>
+              <div class="text-[10px] text-yellow-200/80 uppercase font-black tracking-wider">Gold Coins</div>
+              <div id="final-coins" class="text-base sm:text-lg font-black text-yellow-300">+500</div>
+            </div>
+          </div>
+
+          <div class="bg-slate-900/90 p-3 rounded-2xl border border-sky-400/40 shadow-inner flex items-center space-x-2.5">
+            <span class="text-2xl sm:text-3xl">💎</span>
+            <div>
+              <div class="text-[10px] text-sky-200/80 uppercase font-black tracking-wider">Gems Found</div>
+              <div id="final-gems" class="text-base sm:text-lg font-black text-amber-300">+0</div>
+            </div>
+          </div>
+
+          <div class="bg-slate-900/90 p-3 rounded-2xl border border-emerald-400/40 shadow-inner flex items-center space-x-2.5">
+            <span class="text-2xl sm:text-3xl">🎯</span>
+            <div>
+              <div class="text-[10px] text-emerald-200/80 uppercase font-black tracking-wider">Accuracy</div>
+              <div id="accuracy-display" class="text-base sm:text-lg font-black text-emerald-300">100%</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Expedition Collected Fishing Gear Showcase -->
+        <div class="mb-5 bg-slate-900/80 p-3 rounded-2xl border border-cyan-500/40 text-left">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-black text-cyan-300 uppercase tracking-wider flex items-center gap-1.5">
+              <span>🎒</span> Fishing Gear Collected:
+            </span>
+            <span id="victory-gear-count" class="text-xs font-black text-yellow-400">0/6</span>
+          </div>
+          <div id="victory-gear-list" class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+        <!-- Action Play Again Button -->
+        <button id="restart-btn" class="w-full py-3.5 px-4 bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500 hover:from-yellow-300 hover:to-amber-300 text-slate-950 font-black rounded-2xl shadow-[0_10px_25px_rgba(234,179,8,0.4)] transform hover:-translate-y-0.5 active:scale-95 transition flex items-center justify-center space-x-2 text-base uppercase tracking-wider">
+          <span class="text-lg">🔄</span>
+          <span>Set Sail & Play Again</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Tackle Box Collection Modal -->
+    <div id="tackle-box-modal" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 hidden">
+      <div class="relative w-full max-w-md bg-gradient-to-b from-slate-900 via-sky-950 to-slate-950 border-2 border-cyan-400/60 rounded-3xl p-4 sm:p-6 text-white shadow-2xl">
+        <div class="flex items-center justify-between pb-3 border-b border-cyan-500/30 mb-4">
+          <div class="flex items-center space-x-2">
+            <span class="text-2xl">🎒</span>
+            <div>
+              <h3 class="text-sm sm:text-base font-black text-cyan-200">Captain's Tackle Box</h3>
+              <p class="text-[10px] text-cyan-400/80">Unlocked with 3x correct spelling streaks!</p>
+            </div>
+          </div>
+          <button id="close-tackle-btn" class="p-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-cyan-200 transition">
+            ✕
+          </button>
+        </div>
+
+        <div id="tackle-box-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-[55vh] overflow-y-auto pr-1">
+          <!-- Populated dynamically -->
+        </div>
+
+        <div class="mt-4 text-center">
+          <p class="text-[11px] text-amber-300/90 font-bold">
+            🔥 Keep a streak of 3+ catches in a row to discover more legendary gear!
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /**
+     * Synthesized Realistic Aquatic Sound Engine via Web Audio API.
+     * Generates bubble pops, cavitation pulses, reel ratchet clicks, and splash thuds.
+     */
+    class RealisticAquaticAudio {
+      constructor() {
+        this.ctx = null;
+        this.isMuted = false;
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AudioContextClass();
+        }
+        if (this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      playBubblePop(pitchShift = 1) {
+        if (this.isMuted) return;
+        try {
+          this.init();
+          if (!this.ctx) return;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          const filter = this.ctx.createBiquadFilter();
+
+          const now = this.ctx.currentTime;
+          const baseFreq = (390 + Math.random() * 210) * pitchShift;
+
+          // Water bubble upward resonant sweep
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(baseFreq, now);
+          osc.frequency.exponentialRampToValueAtTime(baseFreq * 2.3, now + 0.08);
+
+          filter.type = 'bandpass';
+          filter.frequency.setValueAtTime(baseFreq * 1.35, now);
+          filter.Q.setValueAtTime(5.0, now);
+
+          gain.gain.setValueAtTime(0.001, now);
+          gain.gain.linearRampToValueAtTime(0.24, now + 0.015);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.11);
+
+          osc.connect(filter);
+          filter.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc.start(now);
+          osc.stop(now + 0.12);
+        } catch (e) {}
+      }
+
+      playBubbleStream() {
+        if (this.isMuted) return;
+        for (let i = 0; i < 5; i++) {
+          setTimeout(() => {
+            this.playBubblePop(0.85 + Math.random() * 0.45);
+          }, i * 60);
+        }
+      }
+
+      playCastLine() {
+        if (this.isMuted) return;
+        try {
+          this.init();
+          if (!this.ctx) return;
+          const now = this.ctx.currentTime;
+
+          // Realistic Whip Whoosh
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(220, now);
+          osc.frequency.exponentialRampToValueAtTime(1050, now + 0.22);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.linearRampToValueAtTime(0.001, now + 0.26);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.27);
+
+          // Fast Ratchet Pawl Clicks (Tick-tick-tick-tick)
+          for (let i = 0; i < 5; i++) {
+            const clickTime = now + 0.06 + i * 0.045;
+            const cOsc = this.ctx.createOscillator();
+            const cGain = this.ctx.createGain();
+            cOsc.type = 'triangle';
+            cOsc.frequency.setValueAtTime(1600 + i * 120, clickTime);
+            cGain.gain.setValueAtTime(0.08, clickTime);
+            cGain.gain.linearRampToValueAtTime(0.001, clickTime + 0.02);
+            cOsc.connect(cGain);
+            cGain.connect(this.ctx.destination);
+            cOsc.start(clickTime);
+            cOsc.stop(clickTime + 0.025);
+          }
+        } catch (e) {}
+      }
+
+      playCatchSuccess() {
+        if (this.isMuted) return;
+        try {
+          this.init();
+          if (!this.ctx) return;
+          const now = this.ctx.currentTime;
+          const notes = [523.25, 659.25, 783.99, 1046.5, 1318.51];
+
+          notes.forEach((freq, idx) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, now + idx * 0.07);
+            gain.gain.setValueAtTime(0.22, now + idx * 0.07);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.07 + 0.5);
+
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(now + idx * 0.07);
+            osc.stop(now + idx * 0.07 + 0.52);
+          });
+          this.playBubbleStream();
+        } catch (e) {}
+      }
+
+      playTreasureChestChimes() {
+        if (this.isMuted) return;
+        try {
+          this.init();
+          if (!this.ctx) return;
+          const now = this.ctx.currentTime;
+          // Shimmering crystalline coin drop bell harmonics
+          const bellTones = [1046.5, 1318.51, 1567.98, 2093.0, 2637.02, 3135.96];
+          for (let i = 0; i < 16; i++) {
+            const toneTime = now + 0.15 + i * 0.08;
+            const freq = bellTones[Math.floor(Math.random() * bellTones.length)] * (1 + (Math.random() - 0.5) * 0.05);
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, toneTime);
+            gain.gain.setValueAtTime(0.12, toneTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, toneTime + 0.35);
+
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(toneTime);
+            osc.stop(toneTime + 0.36);
+          }
+        } catch (e) {}
+      }
+
+      playFishWiggleSplash() {
+        if (this.isMuted) return;
+        try {
+          this.init();
+          if (!this.ctx) return;
+          const now = this.ctx.currentTime;
+
+          // Water cavitation thud
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(180, now);
+          osc.frequency.exponentialRampToValueAtTime(80, now + 0.22);
+          gain.gain.setValueAtTime(0.28, now);
+          gain.gain.linearRampToValueAtTime(0.01, now + 0.23);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.24);
+
+          // Escaping bubbles
+          this.playBubblePop(0.9);
+          setTimeout(() => this.playBubblePop(1.2), 60);
+          setTimeout(() => this.playBubblePop(1.4), 130);
+        } catch (e) {}
+      }
+
+      playSandSinkThud() {
+        if (this.isMuted) return;
+        try {
+          this.init();
+          if (!this.ctx) return;
+          const now = this.ctx.currentTime;
+
+          // Muffled low-frequency deep sand impact thud (desplazamiento de arena en el fondo)
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          const filter = this.ctx.createBiquadFilter();
+
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(130, now);
+          osc.frequency.exponentialRampToValueAtTime(34, now + 0.34);
+
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(240, now);
+          filter.frequency.linearRampToValueAtTime(75, now + 0.34);
+
+          gain.gain.setValueAtTime(0.36, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+
+          osc.connect(filter);
+          filter.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.36);
+
+          // Granular noise buffer for settling silt and sand friction
+          const bufferSize = Math.floor(this.ctx.sampleRate * 0.3);
+          const noiseBuffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+          const output = noiseBuffer.getChannelData(0);
+          for (let i = 0; i < bufferSize; i++) {
+            output[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.32));
+          }
+
+          const whiteNoise = this.ctx.createBufferSource();
+          whiteNoise.buffer = noiseBuffer;
+
+          const nFilter = this.ctx.createBiquadFilter();
+          nFilter.type = 'bandpass';
+          nFilter.frequency.setValueAtTime(420, now);
+          nFilter.Q.setValueAtTime(1.6, now);
+
+          const nGain = this.ctx.createGain();
+          nGain.gain.setValueAtTime(0.24, now);
+          nGain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+
+          whiteNoise.connect(nFilter);
+          nFilter.connect(nGain);
+          nGain.connect(this.ctx.destination);
+          whiteNoise.start(now);
+          whiteNoise.stop(now + 0.29);
+
+          // Soft low-pitch sediment bubbles released from the sand bed
+          setTimeout(() => this.playBubblePop(0.55), 70);
+          setTimeout(() => this.playBubblePop(0.72), 150);
+        } catch (e) {}
+      }
+
+      playVictory() {
+        if (this.isMuted) return;
+        try {
+          this.init();
+          if (!this.ctx) return;
+          const now = this.ctx.currentTime;
+          const melody = [523.25, 659.25, 783.99, 1046.5, 987.77, 1046.5];
+          const durations = [0.15, 0.15, 0.18, 0.25, 0.15, 0.65];
+          let offset = 0;
+
+          melody.forEach((freq, i) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, now + offset);
+            gain.gain.setValueAtTime(0.25, now + offset);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + offset + durations[i]);
+
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(now + offset);
+            osc.stop(now + offset + durations[i] + 0.05);
+            offset += durations[i] * 0.9;
+          });
+        } catch (e) {}
+      }
+    }
+
+    const soundEngine = new RealisticAquaticAudio();
+
+    const SPELLING_DICTIONARY = [
+      {
+        id: 'sp1',
+        word: 'DOLPHIN',
+        category: 'Marine Wildlife',
+        clue: 'Intelligent marine mammal known for agility and playful leaps.',
+        emoji: '🐬',
+        options: ['DOLPHIN', 'SHARK', 'WHALE', 'OCTOPUS']
+      },
+      {
+        id: 'sp2',
+        word: 'STARFISH',
+        category: 'Coral Seafloor',
+        clue: 'Five-armed ocean creature resting gently on golden sand.',
+        emoji: '⭐',
+        options: ['STARFISH', 'JELLYFISH', 'URCHIN', 'CRAB']
+      },
+      {
+        id: 'sp3',
+        word: 'CORAL',
+        category: 'Deep Reef',
+        clue: 'Vibrant living structure that provides home to thousands of fish.',
+        emoji: '🪸',
+        options: ['CORAL', 'SEAWEED', 'ANEMONE', 'SPONGE']
+      },
+      {
+        id: 'sp4',
+        word: 'BOAT',
+        category: 'Ocean Surface',
+        clue: 'Seafaring vessel gliding across the endless blue waves.',
+        emoji: '⛵',
+        options: ['BOAT', 'CANOE', 'SUBMARINE', 'SAILBOAT']
+      },
+      {
+        id: 'sp5',
+        word: 'TURTLE',
+        category: 'Ocean Realm',
+        clue: 'Ancient reptile with a sturdy shell and graceful gliding strokes.',
+        emoji: '🐢',
+        options: ['TURTLE', 'MANATEE', 'LOBSTER', 'MORAY']
+      },
+      {
+        id: 'sp6',
+        word: 'TREASURE',
+        category: 'Sunken Galleon',
+        clue: 'Ancient chest filled with glittering gems beneath the tides.',
+        emoji: '🪙',
+        options: ['TREASURE', 'CROWN', 'COINS', 'DIAMOND']
+      },
+      {
+        id: 'sp7',
+        word: 'COMPASS',
+        category: 'Nautical Navigation',
+        clue: 'Navigational tool with a magnetic needle pointing true north.',
+        emoji: '🧭',
+        options: ['COMPASS', 'SPYGLASS', 'RUDDER', 'ANCHOR']
+      }
+    ];
+
+    // Collectible Fishing Gear Catalogue (Awarded at 3x streaks)
+    const FISHING_COLLECTIBLES = [
+      {
+        id: 'gear1',
+        name: 'Golden Siren Lure',
+        icon: '🪝',
+        rarity: 'Legendary',
+        badgeColor: 'border-amber-400 text-amber-300 bg-amber-500/20',
+        desc: 'Forged from siren scales and gold, attracts royal deep-sea species.'
+      },
+      {
+        id: 'gear2',
+        name: 'Neptune Titanium Reel',
+        icon: '⚙️',
+        rarity: 'Epic',
+        badgeColor: 'border-purple-400 text-purple-300 bg-purple-500/20',
+        desc: 'Precision gearing that withstands the pull of oceanic currents.'
+      },
+      {
+        id: 'gear3',
+        name: 'Luminous Pearl Bobber',
+        icon: '🔮',
+        rarity: 'Rare',
+        badgeColor: 'border-sky-400 text-sky-300 bg-sky-500/20',
+        desc: 'Glows in abyssal darkness to detect the slightest nibble.'
+      },
+      {
+        id: 'gear4',
+        name: 'Ancient Abyssal Compass',
+        icon: '🧭',
+        rarity: 'Rare',
+        badgeColor: 'border-teal-400 text-teal-300 bg-teal-500/20',
+        desc: 'Its enchanted magnetic needle points toward sunken treasures.'
+      },
+      {
+        id: 'gear5',
+        name: 'Deep Angler Lantern',
+        icon: '🏮',
+        rarity: 'Epic',
+        badgeColor: 'border-orange-400 text-orange-300 bg-orange-500/20',
+        desc: 'Casts bioluminescent rays through the murkiest depths.'
+      },
+      {
+        id: 'gear6',
+        name: 'Kraken-Skin Tackle Gloves',
+        icon: '🧤',
+        rarity: 'Legendary',
+        badgeColor: 'border-rose-400 text-rose-300 bg-rose-500/20',
+        desc: 'Provides supreme grip, completely impervious to sharp coral and fins.'
+      }
+    ];
+
+    let collectedGear = [];
+
+    // Game state tracking
+    const TOTAL_ROUNDS = 5;
+    let roundPool = [];
+    let currentRoundIdx = 0;
+    let caughtCount = 0;
+    let streak = 0;
+    let gems = 0;
+    let xp = 0;
+    let totalAttempts = 0;
+    let isFishing = false;
+    let activeWordObj = null;
+
+    function createFishSvg(species, word, isLeftFacing) {
+      const fontSize = word.length > 7 ? '13px' : '15px';
+      // Flip ONLY the fish body anatomy inside SVG coordinate space, NEVER the text!
+      const flipTransform = isLeftFacing ? 'transform="translate(240, 0) scale(-1, 1)"' : '';
+
+      // The word text remains completely upright, centered, and standard left-to-right
+      const textElement = `
+        <text
+          x="120"
+          y="68"
+          text-anchor="middle"
+          dominant-baseline="central"
+          fill="#FFFFFF"
+          class="font-black uppercase tracking-widest pointer-events-none select-none"
+          style="font-size: ${fontSize}; font-weight: 900; letter-spacing: 0.08em; filter: drop-shadow(0px 1px 3px rgba(0,0,0,0.9)) drop-shadow(0px 0px 5px rgba(255,255,255,0.7));"
+        >
+          ${word}
+        </text>
+      `;
+
+      if (species === 'tang') {
+        // Royal Blue Tang (Surgeonfish) with seamless overlapping caudal peduncle
+        return `
+          <div class="relative w-60 h-32 flex items-center justify-center filter drop-shadow-[0_12px_18px_rgba(3,105,161,0.55)]">
+            <svg viewBox="0 0 240 130" class="w-full h-full overflow-visible">
+              <defs>
+                <linearGradient id="tangBodyGrad_${word}" x1="0%" y1="20%" x2="100%" y2="80%">
+                  <stop offset="0%" stop-color="#1E3A8A" />
+                  <stop offset="40%" stop-color="#2563EB" />
+                  <stop offset="85%" stop-color="#0284C7" />
+                  <stop offset="100%" stop-color="#38BDF8" />
+                </linearGradient>
+                <linearGradient id="tangTailGrad_${word}" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#F59E0B" />
+                  <stop offset="100%" stop-color="#FDE047" />
+                </linearGradient>
+              </defs>
+              <g ${flipTransform}>
+                <!-- Anatomically Anchored Caudal Fin (Overlaps inside peduncle base at x=56) -->
+                <path d="M 58 65 L 10 26 C 18 55, 18 75, 10 104 Z" fill="url(#tangTailGrad_${word})" class="fish-tail-wag" />
+                <!-- Dorsal & Ventral Fins with subtle fluid undulation -->
+                <path d="M 90 26 C 120 10, 175 14, 205 33 C 190 28, 140 26, 90 26 Z" fill="#60A5FA" fill-opacity="0.65" stroke="#93C5FD" stroke-width="1.2" class="dorsal-fin-undulate" />
+                <path d="M 95 104 C 130 118, 175 112, 195 97 C 180 102, 135 104, 95 104 Z" fill="#60A5FA" fill-opacity="0.65" stroke="#93C5FD" stroke-width="1.2" />
+                <!-- Streamlined Body with Seamless Peduncle Cap -->
+                <path d="M 46 65 C 55 35, 125 22, 195 38 C 228 50, 236 65, 230 72 C 220 85, 195 105, 125 108 C 65 105, 46 85, 46 65 Z" fill="url(#tangBodyGrad_${word})" stroke="#BAE6FD" stroke-width="1.6" />
+                <!-- Swirling Black Tang Markings -->
+                <path d="M 80 48 C 120 40, 165 42, 190 56 C 180 62, 150 56, 120 60 C 95 64, 75 72, 70 82 C 64 72, 68 55, 80 48 Z" fill="#0F172A" fill-opacity="0.88" />
+                <!-- Glowing Yellow Side Swatch -->
+                <path d="M 180 68 C 165 72, 145 78, 148 88 C 158 92, 175 80, 185 74 Z" fill="#FBBF24" opacity="0.9" />
+                <!-- Active Steering Pectoral Fin -->
+                <path d="M 175 72 C 160 76, 148 82, 152 90 C 160 92, 174 82, 182 75 Z" fill="#FBBF24" opacity="0.95" class="pectoral-fin-flutter" />
+                <!-- Realistic Eye with corneal highlight -->
+                <circle cx="214" cy="56" r="6" fill="#F8FAFC" />
+                <circle cx="215.5" cy="55.5" r="3.2" fill="#020617" />
+                <circle cx="217" cy="54.2" r="1.2" fill="#FFFFFF" />
+                <!-- Snout Anchor Point for Hook Contact -->
+                <circle class="fish-snout-point" cx="230" cy="65" r="2" fill="transparent" />
+              </g>
+              ${textElement}
+            </svg>
+          </div>
+        `;
+      } else if (species === 'clownfish') {
+        // Vibrant Orange Clownfish with seamless organic joints
+        return `
+          <div class="relative w-60 h-32 flex items-center justify-center filter drop-shadow-[0_12px_18px_rgba(234,88,12,0.55)]">
+            <svg viewBox="0 0 240 130" class="w-full h-full overflow-visible">
+              <defs>
+                <linearGradient id="clownGrad_${word}" x1="0%" y1="0%" x2="100%" y2="80%">
+                  <stop offset="0%" stop-color="#EA580C" />
+                  <stop offset="50%" stop-color="#F97316" />
+                  <stop offset="100%" stop-color="#FB923C" />
+                </linearGradient>
+              </defs>
+              <g ${flipTransform}>
+                <!-- Caudal Fin nested seamlessly behind body peduncle -->
+                <path d="M 58 65 C 32 38, 14 42, 10 65 C 14 88, 32 92, 58 65 Z" fill="#EA580C" stroke="#0F172A" stroke-width="2" class="fish-tail-wag" />
+                <path d="M 90 30 C 115 13, 160 14, 185 34 C 155 30, 115 28, 90 30 Z" fill="#F97316" stroke="#0F172A" stroke-width="2" class="dorsal-fin-undulate" />
+                <!-- Body capping over the tail joint at x=48 -->
+                <path d="M 48 65 C 55 35, 120 25, 180 34 C 215 45, 230 62, 225 72 C 215 90, 175 106, 120 105 C 65 104, 48 85, 48 65 Z" fill="url(#clownGrad_${word})" stroke="#C2410C" stroke-width="1.6" />
+                <!-- Realistic White Stripes with Black Margins -->
+                <path d="M 195 38 C 185 45, 182 82, 192 92 C 198 94, 202 88, 201 82 C 194 72, 196 52, 204 43 Z" fill="#FFFFFF" stroke="#0F172A" stroke-width="2" />
+                <path d="M 130 28 C 115 40, 116 88, 132 104 C 140 102, 142 92, 137 84 C 128 66, 130 52, 144 32 Z" fill="#FFFFFF" stroke="#0F172A" stroke-width="2" />
+                <path d="M 68 48 C 64 54, 64 74, 68 82 C 73 80, 75 75, 73 66 C 71 58, 73 52, 74 49 Z" fill="#FFFFFF" stroke="#0F172A" stroke-width="1.8" />
+                <!-- Steering Pectoral Fin -->
+                <path d="M 165 72 C 150 75, 140 85, 146 94 C 155 96, 168 86, 174 76 Z" fill="#F97316" stroke="#0F172A" stroke-width="1.6" class="pectoral-fin-flutter" />
+                <circle cx="210" cy="58" r="6" fill="#F8FAFC" />
+                <circle cx="211" cy="57.5" r="3.2" fill="#451A03" />
+                <circle cx="212" cy="56.2" r="1.1" fill="#FFFFFF" />
+                <circle class="fish-snout-point" cx="225" cy="65" r="2" fill="transparent" />
+              </g>
+              ${textElement}
+            </svg>
+          </div>
+        `;
+      } else if (species === 'angelfish') {
+        // Graceful Emerald/Teal Deep Reef Angelfish
+        return `
+          <div class="relative w-60 h-36 flex items-center justify-center filter drop-shadow-[0_12px_18px_rgba(13,148,136,0.55)]">
+            <svg viewBox="0 0 240 145" class="w-full h-full overflow-visible">
+              <defs>
+                <linearGradient id="angelGrad_${word}" x1="20%" y1="0%" x2="80%" y2="100%">
+                  <stop offset="0%" stop-color="#059669" />
+                  <stop offset="40%" stop-color="#0D9488" />
+                  <stop offset="85%" stop-color="#0891B2" />
+                  <stop offset="100%" stop-color="#0284C7" />
+                </linearGradient>
+              </defs>
+              <g ${flipTransform}>
+                <!-- Caudal Fin anchored at x=60 inside peduncle -->
+                <path d="M 60 72 L 12 46 C 22 68, 22 76, 12 98 Z" fill="#2DD4BF" fill-opacity="0.85" class="fish-tail-wag" />
+                <path d="M 125 50 L 145 6 C 148 10, 160 30, 168 55 Z" fill="#14B8A6" stroke="#5EEAD4" stroke-width="1.6" class="dorsal-fin-undulate" />
+                <path d="M 130 94 L 140 138 C 144 135, 155 115, 165 92 Z" fill="#0D9488" stroke="#5EEAD4" stroke-width="1.6" />
+                <!-- Torso covering peduncle joint -->
+                <path d="M 52 72 C 70 42, 115 32, 175 48 C 215 60, 228 72, 222 78 C 210 90, 165 110, 115 106 C 75 102, 52 92, 52 72 Z" fill="url(#angelGrad_${word})" stroke="#99F6E4" stroke-width="1.8" />
+                <path d="M 115 40 Q 112 72 120 102" stroke="#042F2C" stroke-width="4" stroke-linecap="round" opacity="0.35" />
+                <path d="M 152 42 Q 150 72 156 98" stroke="#042F2C" stroke-width="4" stroke-linecap="round" opacity="0.35" />
+                <!-- Pectoral Fin -->
+                <path d="M 168 76 C 155 82, 146 92, 152 98 C 160 98, 172 88, 178 78 Z" fill="#2DD4BF" opacity="0.75" class="pectoral-fin-flutter" />
+                <circle cx="206" cy="65" r="5.5" fill="#CCFBF1" />
+                <circle cx="207.5" cy="64.5" r="2.8" fill="#042F2E" />
+                <circle cx="208.5" cy="63.5" r="1.1" fill="#FFFFFF" />
+                <circle class="fish-snout-point" cx="222" cy="74" r="2" fill="transparent" />
+              </g>
+              <text
+                x="120"
+                y="74"
+                text-anchor="middle"
+                dominant-baseline="central"
+                fill="#FFFFFF"
+                class="font-black uppercase tracking-widest pointer-events-none select-none"
+                style="font-size: ${fontSize}; font-weight: 900; letter-spacing: 0.08em; filter: drop-shadow(0px 1px 3px rgba(0,0,0,0.9)) drop-shadow(0px 0px 5px rgba(255,255,255,0.7));"
+              >
+                ${word}
+              </text>
+            </svg>
+          </div>
+        `;
+      } else {
+        // Shimmering Golden Seabream / Koi with fluid caudal motion
+        return `
+          <div class="relative w-60 h-32 flex items-center justify-center filter drop-shadow-[0_12px_18px_rgba(217,119,6,0.55)]">
+            <svg viewBox="0 0 240 130" class="w-full h-full overflow-visible">
+              <defs>
+                <linearGradient id="koiGrad_${word}" x1="0%" y1="10%" x2="100%" y2="90%">
+                  <stop offset="0%" stop-color="#D97706" />
+                  <stop offset="45%" stop-color="#F59E0B" />
+                  <stop offset="85%" stop-color="#FBBF24" />
+                  <stop offset="100%" stop-color="#FEF08A" />
+                </linearGradient>
+              </defs>
+              <g ${flipTransform}>
+                <!-- Caudal Fin anchored seamlessly at x=58 -->
+                <path d="M 58 65 C 34 36, 12 32, 14 54 C 18 64, 18 66, 14 76 C 12 98, 34 94, 58 65 Z" fill="#F59E0B" fill-opacity="0.88" stroke="#B45309" stroke-width="1.3" class="fish-tail-wag" />
+                <path d="M 85 34 C 115 20, 165 24, 190 40 C 165 34, 118 32, 85 34 Z" fill="#FDE68A" stroke="#D97706" stroke-width="1.5" class="dorsal-fin-undulate" />
+                <!-- Torpedo Body covering peduncle joint at x=48 -->
+                <path d="M 48 65 C 58 38, 120 28, 185 40 C 220 50, 232 64, 226 72 C 218 86, 185 104, 125 104 C 65 102, 48 86, 48 65 Z" fill="url(#koiGrad_${word})" stroke="#FEF08A" stroke-width="1.6" />
+                <!-- Koi Steering Fin -->
+                <path d="M 172 70 C 158 74, 146 84, 150 92 C 158 94, 172 84, 178 74 Z" fill="#FEF08A" stroke="#D97706" stroke-width="1.2" class="pectoral-fin-flutter" />
+                <circle cx="212" cy="57" r="5.6" fill="#FFFFFF" />
+                <circle cx="213.5" cy="56.5" r="2.9" fill="#1E1B4B" />
+                <circle cx="214.5" cy="55.2" r="1.1" fill="#FFFFFF" />
+                <circle class="fish-snout-point" cx="226" cy="68" r="2" fill="transparent" />
+              </g>
+              ${textElement}
+            </svg>
+          </div>
+        `;
+      }
+    }
+
+    function initAmbientBubbles() {
+      const container = document.getElementById('ambient-bubbles-layer');
+      container.innerHTML = '';
+      for (let i = 0; i < 20; i++) {
+        const bubble = document.createElement('div');
+        const left = Math.random() * 95;
+        const size = 6 + Math.random() * 12;
+        const duration = 6 + Math.random() * 6;
+        const delay = Math.random() * 6;
+
+        bubble.className = 'absolute realistic-bubble pointer-events-none';
+        bubble.style.left = `${left}%`;
+        bubble.style.width = `${size}px`;
+        bubble.style.height = `${size}px`;
+        bubble.style.bottom = '-25px';
+        bubble.style.animation = `risingBubble ${duration}s ease-in infinite`;
+        bubble.style.animationDelay = `${delay}s`;
+        container.appendChild(bubble);
+      }
+    }
+
+    function renderHudSlots() {
+      const slotsContainer = document.getElementById('fish-slots');
+      slotsContainer.innerHTML = '';
+      for (let i = 0; i < TOTAL_ROUNDS; i++) {
+        const slot = document.createElement('div');
+        slot.className = `w-7 h-7 rounded-full flex items-center justify-center transition-all duration-500 text-xs font-black ${
+          i < caughtCount
+            ? 'bg-gradient-to-br from-amber-300 to-yellow-500 text-amber-950 scale-110 shadow-lg shadow-yellow-400/50 ring-2 ring-yellow-200'
+            : 'bg-slate-800/80 text-slate-500 border border-slate-700'
+        }`;
+        slot.textContent = i < caughtCount ? '🐟' : '○';
+        slotsContainer.appendChild(slot);
+      }
+
+      document.getElementById('streak-text').textContent = `x${streak >= 3 ? 3 : streak === 2 ? 2 : 1}`;
+      const streakBadge = document.getElementById('streak-badge');
+      if (streak >= 3) {
+        streakBadge.className = 'flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-black bg-gradient-to-r from-yellow-400 via-amber-500 to-orange-500 text-slate-950 shadow-lg animate-pulse ring-2 ring-yellow-300';
+      } else if (streak === 2) {
+        streakBadge.className = 'flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-black bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md';
+      } else {
+        streakBadge.className = 'flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-black bg-slate-800/90 text-slate-300 border border-slate-700 shadow transition-all';
+      }
+
+      document.getElementById('gems-text').textContent = gems;
+      document.getElementById('tackle-count-text').textContent = `${collectedGear.length}/${FISHING_COLLECTIBLES.length}`;
+    }
+
+    /**
+     * Awards a collectible fishing item when achieving a streak of 3+ consecutive correct words.
+     */
+    function checkStreakGearReward() {
+      if (streak >= 3) {
+        // Find next uncollected item
+        const nextItem = FISHING_COLLECTIBLES.find(item => !collectedGear.some(g => g.id === item.id));
+        if (nextItem) {
+          collectedGear.push(nextItem);
+          soundEngine.playTreasureChestChimes();
+          showGearUnlockToast(nextItem);
+          renderHudSlots();
+        }
+      }
+    }
+
+    function showGearUnlockToast(item) {
+      const toast = document.getElementById('gear-unlock-toast');
+      if (!toast) return;
+
+      document.getElementById('gear-toast-icon').textContent = item.icon;
+      document.getElementById('gear-toast-name').textContent = item.name;
+      document.getElementById('gear-toast-rarity').textContent = item.rarity;
+
+      toast.classList.remove('hidden');
+      toast.firstElementChild.classList.remove('gear-toast-animation');
+      void toast.offsetWidth; // Force CSS reflow
+      toast.firstElementChild.classList.add('gear-toast-animation');
+
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 4500);
+    }
+
+    function openTackleBoxModal() {
+      const modal = document.getElementById('tackle-box-modal');
+      const grid = document.getElementById('tackle-box-grid');
+      grid.innerHTML = '';
+
+      FISHING_COLLECTIBLES.forEach(item => {
+        const isCollected = collectedGear.some(g => g.id === item.id);
+        const card = document.createElement('div');
+        card.className = `p-3 rounded-2xl border transition-all ${
+          isCollected
+            ? 'bg-slate-900/95 border-cyan-400/60 shadow-md'
+            : 'bg-slate-950/70 border-slate-800 opacity-55'
+        }`;
+
+        card.innerHTML = `
+          <div class="flex items-start space-x-2.5">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center text-2xl ${
+              isCollected ? 'bg-cyan-500/20 border border-cyan-400/40 gear-unlock-pulse' : 'bg-slate-800 text-slate-600'
+            }">
+              ${isCollected ? item.icon : '🔒'}
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <h4 class="text-xs font-black ${isCollected ? 'text-white' : 'text-slate-400'} truncate">${item.name}</h4>
+                <span class="text-[9px] font-bold px-1.5 py-0.2 rounded border ${isCollected ? item.badgeColor : 'border-slate-700 text-slate-500 bg-slate-800'}">
+                  ${item.rarity}
+                </span>
+              </div>
+              <p class="text-[10px] ${isCollected ? 'text-cyan-200/80' : 'text-slate-500'} mt-1 leading-snug">
+                ${isCollected ? item.desc : 'Unlocked with a 3x spelling streak.'}
+              </p>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+
+      modal.classList.remove('hidden');
+    }
+
+    function closeTackleBoxModal() {
+      document.getElementById('tackle-box-modal').classList.add('hidden');
+    }
+
+    function showBanner(message, type = 'info') {
+      const banner = document.getElementById('feedback-banner');
+      const content = document.getElementById('feedback-content');
+      const icon = document.getElementById('feedback-icon');
+      const msg = document.getElementById('feedback-message');
+
+      msg.textContent = message;
+
+      if (type === 'success') {
+        icon.textContent = '✅';
+        content.className = 'px-6 py-2.5 rounded-2xl font-black text-xs sm:text-sm shadow-2xl flex items-center space-x-2.5 backdrop-blur-md border bg-emerald-950/90 text-emerald-200 border-emerald-400';
+      } else if (type === 'miss') {
+        icon.textContent = '🫧';
+        content.className = 'px-6 py-2.5 rounded-2xl font-black text-xs sm:text-sm shadow-2xl flex items-center space-x-2.5 backdrop-blur-md border bg-rose-950/90 text-rose-200 border-rose-400';
+      } else {
+        icon.textContent = '💡';
+        content.className = 'px-6 py-2.5 rounded-2xl font-black text-xs sm:text-sm shadow-2xl flex items-center space-x-2.5 backdrop-blur-md border bg-sky-950/90 text-sky-200 border-sky-400';
+      }
+
+      banner.classList.remove('opacity-0');
+      banner.classList.add('opacity-100');
+    }
+
+    function spawnFishForCurrentRound() {
+      const fishTank = document.getElementById('fish-tank');
+      fishTank.innerHTML = '';
+      clearFishingLine();
+
+      activeWordObj = roundPool[currentRoundIdx];
+      document.getElementById('category-badge').textContent = activeWordObj.category;
+      document.getElementById('round-indicator').innerHTML = `<span>🎯</span> Fishing Target #${currentRoundIdx + 1}`;
+      document.getElementById('target-emoji').textContent = activeWordObj.emoji;
+      document.getElementById('target-clue').textContent = activeWordObj.clue;
+      document.getElementById('target-word-text').textContent = activeWordObj.word;
+
+      showBanner(`Find and catch: "${activeWordObj.word}"`, 'info');
+      soundEngine.playBubblePop(1.15);
+
+      // Automatic word pronunciation on round start without needing to click
+      speakCurrentWord();
+
+      const speciesList = ['tang', 'clownfish', 'angelfish', 'goldenkoi'].sort(() => 0.5 - Math.random());
+      const shuffledOptions = [...activeWordObj.options].sort(() => 0.5 - Math.random());
+      const depths = [32, 48, 63, 78].sort(() => 0.5 - Math.random());
+
+      shuffledOptions.forEach((word, idx) => {
+        const isCorrect = word.trim().toUpperCase() === activeWordObj.word.trim().toUpperCase();
+        // If isLeftFacing is true, it swims to the left; if false, it swims to the right.
+        const isLeftFacing = Math.random() > 0.5;
+        const speed = 11 + Math.random() * 4;
+        const delay = -Math.random() * 6; // Staggered entry so fish are already swimming in tank
+        const species = speciesList[idx % speciesList.length];
+        const top = depths[idx];
+
+        // Swimming Fish Node with trajectory matching head direction
+        const fishNode = document.createElement('div');
+        fishNode.id = `fish-item-${idx}`;
+        fishNode.style.top = `${top}%`;
+        fishNode.style.animationDuration = `${speed}s`;
+        fishNode.style.animationDelay = `${delay}s`;
+        fishNode.className = `absolute cursor-pointer select-none z-20 group ${
+          isLeftFacing ? 'swim-path-left' : 'swim-path-right'
+        }`;
+
+        // Direction orientation wrapper (vertical bobbing without CSS scale overriding)
+        const innerContainer = document.createElement('div');
+        innerContainer.className = 'relative fish-vertical-float transition-transform duration-200 hover:scale-110 active:scale-95';
+        innerContainer.innerHTML = createFishSvg(species, word, isLeftFacing);
+
+        fishNode.appendChild(innerContainer);
+
+        // Click Handler for Fishing Catch
+        fishNode.addEventListener('click', (e) => {
+          e.stopPropagation();
+          handleFishCast(idx, isCorrect, word, fishNode);
+        });
+
+        fishTank.appendChild(fishNode);
+      });
+    }
+
+    /**
+     * Accurately calculates coordinates directly from the red marker on the rod tip
+     * down to the fish's actual mouth (snout), ensuring the hook pierces the lip!
+     */
+    function getExactCoordinates(fishNode) {
+      const stageRect = document.getElementById('game-stage').getBoundingClientRect();
+      const rodTip = document.getElementById('rod-tip-marker');
+      const rodTipRect = rodTip.getBoundingClientRect();
+
+      // Exact pixel coordinates of rod tip relative to the full game stage
+      const originX = (rodTipRect.left + rodTipRect.width / 2) - stageRect.left;
+      const originY = (rodTipRect.top + rodTipRect.height / 2) - stageRect.top;
+
+      // Locate the precise mouth/snout coordinate of the fish
+      const snoutEl = fishNode.querySelector('.fish-snout-point');
+      const isLeft = fishNode.classList.contains('swim-path-left');
+      let targetX, targetY;
+
+      if (snoutEl) {
+        const snoutRect = snoutEl.getBoundingClientRect();
+        targetX = (snoutRect.left + snoutRect.width / 2) - stageRect.left;
+        targetY = (snoutRect.top + snoutRect.height / 2) - stageRect.top;
+      } else {
+        const fishRect = fishNode.getBoundingClientRect();
+        targetX = (isLeft ? fishRect.left + 18 : fishRect.right - 18) - stageRect.left;
+        targetY = (fishRect.top + fishRect.height / 2) - stageRect.top;
+      }
+
+      return { originX, originY, targetX, targetY, stageRect };
+    }
+
+    function drawDynamicFishingLine(originX, originY, targetX, targetY, isTense = false) {
+      const lineLayer = document.getElementById('stage-fishing-line-layer');
+
+      // Taut tension line under pull vs catenary gravity sag during initial cast
+      let pathD;
+      if (isTense) {
+        const midX = (originX + targetX) / 2;
+        const midY = (originY + targetY) / 2 + 5;
+        pathD = `M ${originX} ${originY} Q ${midX} ${midY} ${targetX} ${targetY}`;
+      } else {
+        const controlX = (originX + targetX) / 2;
+        const controlY = Math.min(originY, targetY) + Math.abs(targetY - originY) * 0.42 + 25;
+        pathD = `M ${originX} ${originY} Q ${controlX} ${controlY} ${targetX} ${targetY}`;
+      }
+
+      // Calculate the angle of the line entering the mouth so the hook aligns with line tension
+      const lineAngle = Math.atan2(targetY - originY, targetX - originX) * (180 / Math.PI);
+
+      lineLayer.innerHTML = `
+        <!-- High-strength braided monofilament fishing line -->
+        <path
+          d="${pathD}"
+          stroke="#F8FAFC"
+          stroke-width="2.0"
+          stroke-dasharray="${isTense ? 'none' : '5 2.5'}"
+          fill="none"
+          class="drop-shadow-[0_0_5px_rgba(255,255,255,0.9)]"
+        />
+        <!-- Anatomical Steel Hook embedded directly in the fish's mouth -->
+        <g transform="translate(${targetX}, ${targetY}) rotate(${lineAngle - 90})">
+          <!-- Hook Eye & Line Knot -->
+          <circle cx="0" cy="-2" r="2.2" fill="#94A3B8" stroke="#334155" stroke-width="0.8" />
+          <!-- Steel Hook Shank -->
+          <line x1="0" y1="-2" x2="0" y2="12" stroke="#CBD5E1" stroke-width="2.2" stroke-linecap="round" />
+          <!-- Hook Bend & Penetrating Barb lodged in lip -->
+          <path d="M 0 12 C 0 20, 11 20, 11 12 L 10 9" stroke="#E2E8F0" stroke-width="2.4" fill="none" stroke-linecap="round" />
+          <polygon points="10,9 12,11 9,11" fill="#F8FAFC" />
+        </g>
+      `;
+
+      // Surface Entry Water Ripple Effect
+      createSurfaceRipple(targetX, originY + 80);
+    }
+
+    function clearFishingLine() {
+      document.getElementById('stage-fishing-line-layer').innerHTML = '';
+    }
+
+    function createSurfaceRipple(x, y) {
+      const container = document.getElementById('surface-ripples-container');
+      const ripple = document.createElement('div');
+      ripple.className = 'absolute w-14 h-5 rounded-full border-2 border-white/80 surface-ripple pointer-events-none';
+      ripple.style.left = `${x - 28}px`;
+      ripple.style.top = `${y}px`;
+      container.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 1400);
+    }
+
+    function createSandPuff(x, y) {
+      const container = document.getElementById('particles-layer');
+      const puff = document.createElement('div');
+      puff.className = 'absolute w-16 h-7 rounded-full bg-gradient-to-t from-amber-700/60 via-amber-600/40 to-transparent sand-puff-puff pointer-events-none blur-[2px]';
+      puff.style.left = `${x - 32}px`;
+      puff.style.top = `${y - 14}px`;
+      container.appendChild(puff);
+      setTimeout(() => puff.remove(), 950);
+    }
+
+    function createWaterSplash(x, y) {
+      const layer = document.getElementById('particles-layer');
+      const colors = ['#38BDF8', '#67E8F9', '#FFFFFF', '#BAE6FD', '#FDE047'];
+
+      for (let i = 0; i < 28; i++) {
+        const p = document.createElement('div');
+        const size = 4 + Math.random() * 8;
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const dx = (Math.random() - 0.5) * 150;
+        const dy = -(Math.random() * 95 + 35);
+
+        p.className = 'absolute rounded-full pointer-events-none transition-all duration-700 ease-out';
+        p.style.width = `${size}px`;
+        p.style.height = `${size}px`;
+        p.style.backgroundColor = color;
+        p.style.left = `${x}px`;
+        p.style.top = `${y}px`;
+        p.style.opacity = '1';
+
+        layer.appendChild(p);
+
+        requestAnimationFrame(() => {
+          p.style.transform = `translate(${dx}px, ${dy}px) scale(0.3)`;
+          p.style.opacity = '0';
+        });
+
+        setTimeout(() => p.remove(), 750);
+      }
+    }
+
+    function handleFishCast(fishIdx, isCorrect, wordOption, fishNode) {
+      if (isFishing) return;
+      isFishing = true;
+      totalAttempts++;
+
+      const stageRect = document.getElementById('game-stage').getBoundingClientRect();
+      const tank = document.getElementById('fish-tank');
+      const tankRect = tank.getBoundingClientRect();
+      const tankOffsetLeft = tankRect.left - stageRect.left;
+      const tankOffsetTop = tankRect.top - stageRect.top;
+
+      // Seamlessly capture and lock the fish's exact instantaneous rendered coordinates with ZERO jumping
+      const curFishRect = fishNode.getBoundingClientRect();
+      const currentLeftInTank = curFishRect.left - tankRect.left;
+      const currentTopInTank = curFishRect.top - tankRect.top;
+      const wasSwimmingLeft = fishNode.classList.contains('swim-path-left');
+
+      // Halt swim keyframe translation while preserving the exact position on screen
+      fishNode.classList.remove('swim-path-left', 'swim-path-right');
+      const innerContainer = fishNode.firstElementChild;
+      if (innerContainer) {
+        innerContainer.classList.remove('fish-vertical-float');
+      }
+      fishNode.style.animation = 'none';
+      if (innerContainer) {
+        innerContainer.style.animation = 'none';
+      }
+
+      // Lock to exact current in-tank coordinates
+      fishNode.style.left = `${currentLeftInTank}px`;
+      fishNode.style.top = `${currentTopInTank}px`;
+      fishNode.style.transform = 'none';
+
+      // Compute exact coordinates from the physical rod tip to the fish's mouth at this frozen location
+      const coords = getExactCoordinates(fishNode);
+      drawDynamicFishingLine(coords.originX, coords.originY, coords.targetX, coords.targetY, true);
+      soundEngine.playCastLine();
+
+      // Dynamic Flex on Rod & Seated Fisherman
+      const rodEl = document.getElementById('fishing-rod-element');
+      rodEl.classList.add('animate-rod-cast');
+      const captain = document.getElementById('seated-captain');
+      captain.style.transform = 'rotate(-8deg) scale(1.04)';
+
+      // Calculate mouth offset relative to fishNode's top-left corner
+      const snoutEl = fishNode.querySelector('.fish-snout-point');
+      let mouthOffsetX, mouthOffsetY;
+
+      if (snoutEl) {
+        const sRect = snoutEl.getBoundingClientRect();
+        mouthOffsetX = sRect.left + sRect.width / 2 - curFishRect.left;
+        mouthOffsetY = sRect.top + sRect.height / 2 - curFishRect.top;
+      } else {
+        mouthOffsetX = wasSwimmingLeft ? 18 : curFishRect.width - 18;
+        mouthOffsetY = curFishRect.height / 2;
+      }
+
+      setTimeout(() => {
+        if (isCorrect) {
+          // --- ACIERTO: Pescado sube al barco en arco natural, rompiendo la superficie del agua ---
+          soundEngine.playCatchSuccess();
+          createWaterSplash(coords.targetX, coords.targetY);
+
+          streak++;
+          const multiplier = streak >= 3 ? 3 : streak === 2 ? 2 : 1;
+          const rewardGems = 10 * multiplier;
+          const rewardXp = 20 * multiplier;
+          gems += rewardGems;
+          xp += rewardXp;
+          caughtCount++;
+
+          renderHudSlots();
+
+          // Check and grant collectible gear reward on 3x streak
+          checkStreakGearReward();
+
+          showBanner(`Great catch! "${wordOption}" reeled into the boat (+${rewardGems} 💎).`, 'success');
+
+          // Heavy rod fight curve under live tension
+          rodEl.classList.remove('animate-rod-cast');
+          rodEl.classList.add('animate-rod-fight');
+          captain.style.transform = 'scale(1.08) rotate(5deg)';
+
+          // Transform origin pinned directly at the mouth for realistic pivoting during pull
+          fishNode.style.transformOrigin = `${mouthOffsetX}px ${mouthOffsetY}px`;
+
+          // Tail flutters rapidly during struggle
+          const tailEl = fishNode.querySelector('.fish-tail-wag');
+          if (tailEl) {
+            tailEl.classList.remove('fish-tail-wag');
+            tailEl.classList.add('fish-tail-wag-fast');
+          }
+
+          // Real-life sport fishing arc: fish rises up, surfaces with water splash, then swings into boat
+          let reelFrame = 0;
+          const totalReelFrames = 38;
+          const startSnoutX = coords.targetX;
+          const startSnoutY = coords.targetY;
+          const destSnoutX = coords.originX - 10;
+          const destSnoutY = coords.originY + 36;
+          let hasSplashedSurface = false;
+
+          const reelInterval = setInterval(() => {
+            reelFrame++;
+            const t = reelFrame / totalReelFrames;
+            // Smooth ease in-out cubic progression
+            const easeT = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+            // Parabolic upward arc curve (rises toward surface faster before swinging in)
+            const arcOffset = Math.sin(t * Math.PI) * -38;
+
+            const curSnoutX = startSnoutX + (destSnoutX - startSnoutX) * easeT;
+            const curSnoutY = startSnoutY + (destSnoutY - startSnoutY) * easeT + arcOffset;
+
+            // Trigger surface splash when crossing water line (y approx 175px in stage coordinates)
+            if (curSnoutY <= 185 && !hasSplashedSurface) {
+              hasSplashedSurface = true;
+              createWaterSplash(curSnoutX, 178);
+              createSurfaceRipple(curSnoutX, 178);
+              soundEngine.playFishWiggleSplash();
+            }
+
+            // Accurate hydrodynamic pull angle vector from mouth towards the rod tip
+            const pullAngleDeg = Math.atan2(coords.originY - curSnoutY, coords.originX - curSnoutX) * (180 / Math.PI);
+            const baseRotation = wasSwimmingLeft ? (pullAngleDeg + 180) : pullAngleDeg;
+            const struggleWiggle = Math.sin(reelFrame * 0.92) * 7.5;
+
+            // Fish mouth remains locked to moving hook coordinates (converting from stage to tank space)
+            fishNode.style.left = `${curSnoutX - mouthOffsetX - tankOffsetLeft}px`;
+            fishNode.style.top = `${curSnoutY - mouthOffsetY - tankOffsetTop}px`;
+            fishNode.style.transform = `rotate(${baseRotation + struggleWiggle}deg) scale(${Math.max(0.68, 1 - easeT * 0.32)})`;
+
+            // Dynamic tension line tracked directly to the fish mouth
+            drawDynamicFishingLine(coords.originX, coords.originY, curSnoutX, curSnoutY, true);
+
+            if (reelFrame >= totalReelFrames) {
+              clearInterval(reelInterval);
+            }
+          }, 30);
+
+          setTimeout(() => {
+            clearInterval(reelInterval);
+            clearFishingLine();
+            isFishing = false;
+            rodEl.classList.remove('animate-rod-fight', 'animate-rod-cast');
+            captain.style.transform = 'none';
+
+            if (currentRoundIdx + 1 >= TOTAL_ROUNDS) {
+              triggerVictory();
+            } else {
+              currentRoundIdx++;
+              spawnFishForCurrentRound();
+            }
+          }, 1450);
+        } else {
+          // --- INCORRECTO: Sacudida de cabeza realista, desenganche, clavado con cabeza hacia abajo y cambio de posición ---
+          streak = 0;
+          renderHudSlots();
+
+          // Frantic head shake to throw the hook off
+          fishNode.classList.add('animate-fish-thrash');
+          soundEngine.playFishWiggleSplash();
+
+          setTimeout(() => {
+            fishNode.classList.remove('animate-fish-thrash');
+
+            // Hook slips loose and monofilament snaps back
+            clearFishingLine();
+            rodEl.classList.remove('animate-rod-cast');
+            captain.style.transform = 'none';
+
+            // Head points straight down in the direction of swimming for natural diving posture
+            const diveAngle = wasSwimmingLeft ? -76 : 76;
+            fishNode.style.transformOrigin = 'center center';
+            fishNode.style.transform = `rotate(${diveAngle}deg)`;
+            fishNode.classList.add('fish-head-down-sink');
+
+            soundEngine.playBubbleStream();
+
+            // Plunge down to seabed from exact current column location (using tank coordinates)
+            const targetSeafloorY = tankRect.height - 110;
+            requestAnimationFrame(() => {
+              fishNode.style.top = `${targetSeafloorY}px`;
+            });
+
+            // Landing on the seabed: puff of sand, reorient and change swimming depth
+            setTimeout(() => {
+              const finalRect = fishNode.getBoundingClientRect();
+              const sandX = finalRect.left + finalRect.width / 2 - stageRect.left;
+              createSandPuff(sandX, stageRect.height - 110);
+              soundEngine.playSandSinkThud();
+
+              // Fish levels back out to horizontal
+              fishNode.style.transform = 'rotate(0deg)';
+              fishNode.classList.remove('fish-head-down-sink');
+
+              // Repeat the challenge word once the fish has sunk to the seabed
+              speakCurrentWord();
+
+              // Reposition to a new realistic cruising depth (cambia de posición como en la vida real)
+              const availableDepths = [35, 46, 58, 70, 78];
+              const newRandomDepth = availableDepths[Math.floor(Math.random() * availableDepths.length)];
+
+              setTimeout(() => {
+                fishNode.style.left = '';
+                fishNode.style.top = `${newRandomDepth}%`;
+                fishNode.classList.add(wasSwimmingLeft ? 'swim-path-left' : 'swim-path-right');
+                const inner = fishNode.firstElementChild;
+                if (inner) inner.classList.add('fish-vertical-float');
+                isFishing = false;
+              }, 400);
+            }, 1250);
+          }, 360);
+        }
+      }, 380);
+    }
+
+    function speakCurrentWord() {
+      if (!('speechSynthesis' in window) || !activeWordObj) return;
+      try {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(`Catch the fish: ${activeWordObj.word}`);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.95;
+
+        const speakBtn = document.getElementById('speak-btn');
+        if (speakBtn) speakBtn.classList.add('bg-emerald-600', 'animate-pulse');
+
+        utterance.onend = () => {
+          if (speakBtn) speakBtn.classList.remove('bg-emerald-600', 'animate-pulse');
+        };
+        utterance.onerror = () => {
+          if (speakBtn) speakBtn.classList.remove('bg-emerald-600', 'animate-pulse');
+        };
+
+        window.speechSynthesis.speak(utterance);
+      } catch (e) {}
+    }
+
+    function toggleMute() {
+      soundEngine.isMuted = !soundEngine.isMuted;
+      document.getElementById('mute-icon').textContent = soundEngine.isMuted ? '🔇' : '🔊';
+    }
+
+    function createBurstingTreasureCoins() {
+      const container = document.getElementById('treasure-coins-container');
+      if (!container) return;
+      container.innerHTML = '';
+      const rect = container.getBoundingClientRect();
+      const originX = rect.width / 2;
+      const originY = rect.height / 2 + 30;
+
+      for (let i = 0; i < 36; i++) {
+        const coin = document.createElement('div');
+        const size = 18 + Math.random() * 16;
+        const angle = Math.random() * Math.PI * 2;
+        const dist = 120 + Math.random() * 240;
+        const cx = Math.cos(angle) * dist;
+        const cy = Math.sin(angle) * dist * 0.75 - 70;
+        const rot = Math.round((Math.random() - 0.5) * 720);
+
+        coin.className = 'absolute rounded-full burst-gold-coin shadow-lg flex items-center justify-center font-black text-amber-950 pointer-events-none border-2 border-yellow-200';
+        coin.style.width = `${size}px`;
+        coin.style.height = `${size}px`;
+        coin.style.left = `${originX}px`;
+        coin.style.top = `${originY}px`;
+        coin.style.background = 'radial-gradient(circle, #FFFBEB 15%, #FDE047 50%, #D97706 100%)';
+        coin.style.boxShadow = '0 0 12px rgba(250, 204, 21, 0.7)';
+        coin.style.setProperty('--tw-cx', `${cx}px`);
+        coin.style.setProperty('--tw-cy', `${cy}px`);
+        coin.style.setProperty('--tw-rot', `${rot}deg`);
+        coin.style.animationDelay = `${Math.random() * 0.45}s`;
+
+        coin.innerHTML = `<span style="font-size: ${size * 0.5}px;">🪙</span>`;
+        container.appendChild(coin);
+      }
+    }
+
+    function triggerVictory() {
+      soundEngine.playVictory();
+      soundEngine.playTreasureChestChimes();
+
+      const modal = document.getElementById('victory-modal');
+      const acc = totalAttempts > 0 ? Math.round((caughtCount / totalAttempts) * 100) : 100;
+      document.getElementById('accuracy-display').textContent = `${acc}%`;
+      document.getElementById('final-gems').textContent = `+${gems}`;
+
+      // Calculated gold coins based on performance
+      const totalGoldCoins = 500 + gems * 5;
+      document.getElementById('final-coins').textContent = `+${totalGoldCoins}`;
+
+      // Render collected gear in Victory modal
+      const gearCountEl = document.getElementById('victory-gear-count');
+      const gearListEl = document.getElementById('victory-gear-list');
+      gearCountEl.textContent = `${collectedGear.length}/${FISHING_COLLECTIBLES.length}`;
+      gearListEl.innerHTML = '';
+
+      if (collectedGear.length === 0) {
+        gearListEl.innerHTML = `
+          <div class="col-span-full py-2 text-center text-slate-400 text-xs italic">
+            No gear collected this round. Keep a 3x streak to unlock rare tackle!
+          </div>
+        `;
+      } else {
+        collectedGear.forEach(item => {
+          const itemEl = document.createElement('div');
+          itemEl.className = 'flex items-center space-x-2 bg-slate-950/80 p-2 rounded-xl border border-cyan-400/40';
+          itemEl.innerHTML = `
+            <span class="text-xl">${item.icon}</span>
+            <div class="truncate">
+              <div class="text-[11px] font-black text-white truncate">${item.name}</div>
+              <div class="text-[9px] text-cyan-300">${item.rarity}</div>
+            </div>
+          `;
+          gearListEl.appendChild(itemEl);
+        });
+      }
+
+      modal.classList.remove('hidden');
+
+      // Re-trigger realistic lid opening animation and coin shower
+      const lid = document.getElementById('animated-chest-lid');
+      if (lid) {
+        lid.classList.remove('animate-chest-lid');
+        void lid.offsetWidth; // Force CSS reflow
+        lid.classList.add('animate-chest-lid');
+      }
+
+      createBurstingTreasureCoins();
+    }
+
+    function restartGame() {
+      document.getElementById('victory-modal').classList.add('hidden');
+      const coinsContainer = document.getElementById('treasure-coins-container');
+      if (coinsContainer) coinsContainer.innerHTML = '';
+
+      currentRoundIdx = 0;
+      caughtCount = 0;
+      streak = 0;
+      gems = 0;
+      xp = 0;
+      totalAttempts = 0;
+      isFishing = false;
+
+      roundPool = [...SPELLING_DICTIONARY].sort(() => 0.5 - Math.random()).slice(0, TOTAL_ROUNDS);
+      renderHudSlots();
+      spawnFishForCurrentRound();
+    }
+
+    // Window load bootstrap
+    window.onload = function() {
+      initAmbientBubbles();
+      document.getElementById('mute-btn').addEventListener('click', toggleMute);
+      document.getElementById('speak-btn').addEventListener('click', speakCurrentWord);
+      document.getElementById('restart-btn').addEventListener('click', restartGame);
+      document.getElementById('tackle-box-btn').addEventListener('click', openTackleBoxModal);
+      document.getElementById('close-tackle-btn').addEventListener('click', closeTackleBoxModal);
+
+      // Trigger automatic audio on first user touch/click to satisfy browser autoplay policies
+      const enableAudioOnFirstGesture = () => {
+        soundEngine.init();
+        if (activeWordObj && !window.speechSynthesis.speaking) {
+          speakCurrentWord();
+        }
+        document.removeEventListener('click', enableAudioOnFirstGesture);
+        document.removeEventListener('touchstart', enableAudioOnFirstGesture);
+      };
+      document.addEventListener('click', enableAudioOnFirstGesture);
+      document.addEventListener('touchstart', enableAudioOnFirstGesture);
+
+      // Periodic ambient bubble pops
+      setInterval(() => {
+        if (!isFishing && Math.random() > 0.45) {
+          soundEngine.playBubblePop(0.7 + Math.random() * 0.8);
+        }
+      }, 4000);
+
+      restartGame();
+    };
+  </script>
+</body>
+</html>
