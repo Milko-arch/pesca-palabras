@@ -274,6 +274,46 @@
     .gear-toast-animation {
       animation: slideDownToast 4.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
+    /* Shark Menacing Attack Animations */
+    @keyframes sharkRushCross {
+      0% { transform: translateX(calc(100vw + 80px)); }
+      40% { transform: translateX(calc(55vw - 160px)) scale(1.04); }
+      70% { transform: translateX(calc(25vw - 100px)) scale(1.08); }
+      100% { transform: translateX(-520px) scale(1); }
+    }
+    .shark-attack-charge {
+      animation: sharkRushCross 3.2s cubic-bezier(0.22, 1, 0.36, 1) forwards !important;
+    }
+    @keyframes sharkTailThrash {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-16deg); }
+      75% { transform: rotate(16deg); }
+    }
+    .shark-tail-wag {
+      transform-box: fill-box;
+      transform-origin: 90% 50%;
+      animation: sharkTailThrash 0.24s ease-in-out infinite;
+    }
+    @keyframes sharkJawSnap {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(20deg); }
+    }
+    .shark-jaw-bite {
+      transform-box: fill-box;
+      transform-origin: 30% 70%;
+      animation: sharkJawSnap 0.28s ease-in-out infinite;
+    }
+    /* Fast Panicked Fish Swim Class */
+    .fish-speed-panic {
+      animation-duration: 4.2s !important;
+    }
+    @keyframes dangerPulseVignette {
+      0%, 100% { opacity: 0.15; }
+      50% { opacity: 0.75; }
+    }
+    .danger-vignette-pulse {
+      animation: dangerPulseVignette 1.1s ease-in-out infinite !important;
+    }
   </style>
 </head>
 <body class="bg-slate-950 w-full h-full flex flex-col font-sans text-white select-none overflow-hidden m-0 p-0 fixed inset-0">
@@ -285,6 +325,9 @@
       <div class="absolute -top-16 left-1/5 w-44 h-[720px] bg-gradient-to-b from-white/35 via-cyan-200/10 to-transparent blur-2xl origin-top caustic-light-ray"></div>
       <div class="absolute -top-16 left-3/5 w-56 h-[760px] bg-gradient-to-b from-white/30 via-sky-200/10 to-transparent blur-2xl origin-top caustic-light-ray" style="animation-delay: -3.5s; animation-duration: 9.5s;"></div>
     </div>
+
+    <!-- Danger Vignette Warning Overlay (Flashes during Jaws alert) -->
+    <div id="shark-danger-vignette" class="absolute inset-0 pointer-events-none z-[35] bg-[radial-gradient(ellipse_at_center,_transparent_35%,_rgba(225,29,72,0.55)_100%)] opacity-0 transition-opacity duration-500"></div>
 
     <!-- Floating Ambient Bubbles Layer -->
     <div id="ambient-bubbles-layer" class="absolute inset-0 pointer-events-none z-10 overflow-hidden"></div>
@@ -431,7 +474,7 @@
             <div class="w-full h-1 bg-amber-600/50 rounded-full"></div>
             <div class="w-full h-1 bg-black/40 rounded-full"></div>
             <div class="self-end text-[9px] font-black text-amber-300/90 tracking-widest uppercase drop-shadow">
-              NAUTILUS II
+              FOOTPRINTS
             </div>
           </div>
 
@@ -488,6 +531,69 @@
       <!-- Swimming Fish Container -->
       <div id="fish-tank" class="absolute inset-0 z-20"></div>
 
+      <!-- Menacing Apex Predator Great White Shark (Hidden until attack) -->
+      <div id="shark-container" class="absolute top-[32%] left-0 pointer-events-none z-[45] hidden">
+        <div class="relative w-80 sm:w-96 md:w-[460px] h-36 sm:h-44 md:h-52 drop-shadow-[0_20px_35px_rgba(0,0,0,0.95)]">
+          <svg viewBox="0 0 460 200" class="w-full h-full overflow-visible">
+            <defs>
+              <linearGradient id="sharkSkinGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#1e293b" />
+                <stop offset="42%" stop-color="#334155" />
+                <stop offset="68%" stop-color="#64748b" />
+                <stop offset="78%" stop-color="#f8fafc" />
+                <stop offset="100%" stop-color="#e2e8f0" />
+              </linearGradient>
+              <linearGradient id="sharkFinGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#0f172a" />
+                <stop offset="100%" stop-color="#334155" />
+              </linearGradient>
+            </defs>
+            <!-- Caudal Tail Fin (Thrashing vigorously) -->
+            <g class="shark-tail-wag">
+              <path d="M 370 95 L 455 18 C 438 68, 438 88, 415 98 L 458 178 C 434 140, 400 122, 365 110 Z" fill="url(#sharkFinGrad)" stroke="#0f172a" stroke-width="2" />
+            </g>
+            <!-- Pectoral Fin Far Side -->
+            <path d="M 195 105 L 155 158 C 172 152, 198 135, 218 112 Z" fill="#1e293b" opacity="0.65" />
+            <!-- Dorsal Fin (Apex predator blade cutting water) -->
+            <path d="M 180 62 L 215 8 C 228 26, 245 46, 265 60 Z" fill="url(#sharkFinGrad)" stroke="#0f172a" stroke-width="1.8" />
+            <!-- Second Small Dorsal & Anal Fin -->
+            <path d="M 330 75 L 344 52 L 354 74 Z" fill="#334155" />
+            <path d="M 335 116 L 348 136 L 358 114 Z" fill="#e2e8f0" />
+            <!-- Hydrodynamic Shark Torpedo Fuselage Body -->
+            <path d="M 28 92 C 55 58, 120 48, 220 54 C 330 60, 380 82, 380 102 C 380 120, 320 138, 220 134 C 130 130, 60 120, 32 98 Z" fill="url(#sharkSkinGrad)" stroke="#0f172a" stroke-width="2.2" />
+            <!-- Countershading Lateral Boundary -->
+            <path d="M 45 94 C 110 92, 220 98, 375 102" stroke="#475569" stroke-width="1.5" stroke-dasharray="4 2" fill="none" opacity="0.6" />
+            <!-- Near Pectoral Fin -->
+            <path d="M 145 112 L 105 186 C 135 178, 175 150, 195 118 Z" fill="url(#sharkFinGrad)" stroke="#0f172a" stroke-width="1.8" />
+            <!-- Dark Gill Slits (5 Respiration Openings) -->
+            <g stroke="#0f172a" stroke-width="2.2" stroke-linecap="round" opacity="0.85">
+              <line x1="120" y1="84" x2="116" y2="108" />
+              <line x1="126" y1="83" x2="122" y2="109" />
+              <line x1="132" y1="83" x2="128" y2="109" />
+              <line x1="138" y1="84" x2="134" y2="108" />
+              <line x1="144" y1="85" x2="140" y2="106" />
+            </g>
+            <!-- Menacing Black Eye & Brow Ridge -->
+            <ellipse cx="64" cy="79" rx="5" ry="5.5" fill="#020617" />
+            <circle cx="65.5" cy="78" r="1.3" fill="#ffffff" />
+            <path d="M 56 74 Q 65 72 74 76" stroke="#0f172a" stroke-width="2.5" fill="none" stroke-linecap="round" />
+            <!-- Snapping Lower Jaw & Razor-Sharp Teeth -->
+            <g class="shark-jaw-bite">
+              <!-- Open Mouth Cavity Interior -->
+              <path d="M 28 92 C 34 104, 52 118, 76 114 C 64 104, 54 96, 32 94 Z" fill="#881337" stroke="#0f172a" stroke-width="1.8" />
+              <!-- Serrated Triangular Upper & Lower Teeth -->
+              <polygon points="36,94 40,101 44,95" fill="#ffffff" />
+              <polygon points="44,95 48,103 52,96" fill="#ffffff" />
+              <polygon points="52,96 56,104 60,98" fill="#ffffff" />
+              <polygon points="60,98 64,105 68,100" fill="#ffffff" />
+              <polygon points="42,108 45,102 48,107" fill="#ffffff" />
+              <polygon points="49,107 53,101 56,106" fill="#ffffff" />
+              <polygon points="57,106 61,100 65,105" fill="#ffffff" />
+            </g>
+          </svg>
+        </div>
+      </div>
+
       <!-- Golden Sandy Ocean Floor (Undulating Sand Dunes, Ripples, Pebbles & Shells) -->
       <div class="absolute bottom-0 left-0 right-0 h-24 sm:h-28 md:h-32 pointer-events-none z-10 overflow-hidden pb-[env(safe-area-inset-bottom,0px)]">
         <svg class="absolute bottom-0 w-full h-full overflow-visible" viewBox="0 0 1400 100" preserveAspectRatio="none">
@@ -529,6 +635,13 @@
           <path d="M430,56 C426,52 436,48 440,53 C444,58 434,60 430,56 Z" fill="#ffedd5" stroke="#c2410c" stroke-width="0.8" />
           <path d="M780,62 C776,58 786,55 789,59 C792,63 784,65 780,62 Z" fill="#fed7aa" stroke="#9a3412" stroke-width="0.8" />
         </svg>
+
+        <!-- Signature Inscribed in the Sandy Ocean Floor -->
+        <div class="absolute bottom-2 right-4 sm:right-8 z-20 pointer-events-none select-none">
+          <span class="text-[10px] sm:text-xs font-black tracking-widest text-[#fde047]/80 uppercase drop-shadow-[0_1px_2px_rgba(70,37,10,0.95)]" style="letter-spacing: 0.14em;">
+            By: Ing. Milko Gonzales
+          </span>
+        </div>
       </div>
 
       <!-- Seafloor Ecosystem: Swaying Kelp, Corals, Sea Shells and Starfish -->
@@ -1133,7 +1246,7 @@
           if (!this.ctx) return;
           const now = this.ctx.currentTime;
 
-          // Muffled low-frequency deep sand impact thud (desplazamiento de arena en el fondo)
+          // Muffled low-frequency deep sand impact thud
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
           const filter = this.ctx.createBiquadFilter();
@@ -1155,7 +1268,6 @@
           osc.start(now);
           osc.stop(now + 0.36);
 
-          // Granular noise buffer for settling silt and sand friction
           const bufferSize = Math.floor(this.ctx.sampleRate * 0.3);
           const noiseBuffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
           const output = noiseBuffer.getChannelData(0);
@@ -1181,9 +1293,96 @@
           whiteNoise.start(now);
           whiteNoise.stop(now + 0.29);
 
-          // Soft low-pitch sediment bubbles released from the sand bed
           setTimeout(() => this.playBubblePop(0.55), 70);
           setTimeout(() => this.playBubblePop(0.72), 150);
+        } catch (e) {}
+      }
+
+      /**
+       * Iconic Suspense Jaws Theme Motif (Audible E2 / F2 tuba & cello ostinato with sub-bass)
+       */
+      playJawsNote(freq, duration = 0.28, gainVal = 0.45) {
+        if (this.isMuted) return;
+        try {
+          this.init();
+          if (!this.ctx) return;
+          const now = this.ctx.currentTime;
+
+          const osc = this.ctx.createOscillator();
+          const subOsc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          const filter = this.ctx.createBiquadFilter();
+
+          // Rich dual-oscillator sawtooth for terrifying cinema cello/tuba bite audible on all speakers
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(freq, now);
+
+          subOsc.type = 'triangle';
+          subOsc.frequency.setValueAtTime(freq / 2, now);
+
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(420, now);
+          filter.frequency.exponentialRampToValueAtTime(140, now + duration);
+
+          gain.gain.setValueAtTime(0.001, now);
+          gain.gain.linearRampToValueAtTime(gainVal, now + 0.035);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+          osc.connect(filter);
+          subOsc.connect(filter);
+          filter.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc.start(now);
+          subOsc.start(now);
+          osc.stop(now + duration + 0.03);
+          subOsc.stop(now + duration + 0.03);
+        } catch (e) {}
+      }
+
+      /**
+       * Shark Chomp & Cavitation Crunch Sound Effect
+       */
+      playSharkChomp() {
+        if (this.isMuted) return;
+        try {
+          this.init();
+          if (!this.ctx) return;
+          const now = this.ctx.currentTime;
+
+          // Aggressive water snap
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(260, now);
+          osc.frequency.exponentialRampToValueAtTime(45, now + 0.26);
+          gain.gain.setValueAtTime(0.42, now);
+          gain.gain.linearRampToValueAtTime(0.01, now + 0.27);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.28);
+
+          // Bone/crunch burst noise
+          const bufferSize = Math.floor(this.ctx.sampleRate * 0.2);
+          const noiseBuffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+          const output = noiseBuffer.getChannelData(0);
+          for (let i = 0; i < bufferSize; i++) {
+            output[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.25));
+          }
+          const whiteNoise = this.ctx.createBufferSource();
+          whiteNoise.buffer = noiseBuffer;
+          const nGain = this.ctx.createGain();
+          nGain.gain.setValueAtTime(0.35, now);
+          nGain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+          whiteNoise.connect(nGain);
+          nGain.connect(this.ctx.destination);
+          whiteNoise.start(now);
+          whiteNoise.stop(now + 0.24);
+
+          // Escaping cavitation bubbles
+          setTimeout(() => this.playBubblePop(1.5), 60);
+          setTimeout(() => this.playBubblePop(1.1), 120);
         } catch (e) {}
       }
 
@@ -1414,6 +1613,138 @@
     let isFishing = false;
     let activeWordObj = null;
     let spawnTimeouts = [];
+
+    // Shark & Jaws Suspense Timing Variables
+    let jawsThemeInterval = null;
+    let jawsWarningTimeout = null;
+    let sharkAttackTimeout = null;
+    let sharkAttackOccurring = false;
+
+    function stopJawsAndSharkTimers() {
+      if (jawsThemeInterval) {
+        clearTimeout(jawsThemeInterval);
+        jawsThemeInterval = null;
+      }
+      if (jawsWarningTimeout) {
+        clearTimeout(jawsWarningTimeout);
+        jawsWarningTimeout = null;
+      }
+      if (sharkAttackTimeout) {
+        clearTimeout(sharkAttackTimeout);
+        sharkAttackTimeout = null;
+      }
+
+      const vignette = document.getElementById('shark-danger-vignette');
+      if (vignette) {
+        vignette.classList.remove('danger-vignette-pulse');
+        vignette.classList.add('opacity-0');
+      }
+
+      const sharkEl = document.getElementById('shark-container');
+      if (sharkEl) {
+        sharkEl.classList.add('hidden');
+        sharkEl.classList.remove('shark-attack-charge');
+      }
+
+      sharkAttackOccurring = false;
+    }
+
+    /**
+     * Plays the accelerating chromatic Jaws motif (E2 -> F2 two-note duplets)
+     */
+    function startJawsSuspenseTheme() {
+      if (jawsThemeInterval || isFishing || sharkAttackOccurring) return;
+
+      const vignette = document.getElementById('shark-danger-vignette');
+      if (vignette) {
+        vignette.classList.remove('opacity-0');
+        vignette.classList.add('danger-vignette-pulse');
+      }
+
+      const noteE = 82.41; // E2 (audible on laptop and mobile phone speakers)
+      const noteF = 87.31; // F2
+      let gapDelay = 1100; // time between duplet beats
+
+      function triggerDuplet() {
+        if (isFishing || sharkAttackOccurring) return;
+
+        // First note: DUN
+        soundEngine.playJawsNote(noteE, 0.22, 0.45);
+
+        // Second note: DUN
+        setTimeout(() => {
+          if (isFishing || sharkAttackOccurring) return;
+          soundEngine.playJawsNote(noteF, 0.24, 0.5);
+        }, 180);
+
+        // Accelerate rhythm as danger approaches
+        if (gapDelay > 420) {
+          gapDelay -= 130;
+        }
+
+        jawsThemeInterval = setTimeout(triggerDuplet, gapDelay);
+      }
+
+      triggerDuplet();
+    }
+
+    /**
+     * Triggers the apex predator shark attack when the word was not caught
+     */
+    function triggerSharkAttack() {
+      if (isFishing || sharkAttackOccurring) return;
+      sharkAttackOccurring = true;
+
+      // Stop Jaws ostinato as the shark strikes
+      if (jawsThemeInterval) {
+        clearTimeout(jawsThemeInterval);
+        jawsThemeInterval = null;
+      }
+
+      const sharkEl = document.getElementById('shark-container');
+      const fishTank = document.getElementById('fish-tank');
+      if (!sharkEl || !fishTank) return;
+
+      // Make shark visible and trigger charge animation
+      sharkEl.classList.remove('hidden');
+      void sharkEl.offsetWidth; // Reflow
+      sharkEl.classList.add('shark-attack-charge');
+
+      // Menacing chomps and bites
+      soundEngine.playSharkChomp();
+      setTimeout(() => soundEngine.playSharkChomp(), 800);
+      setTimeout(() => soundEngine.playSharkChomp(), 1600);
+
+      // Points deduction for letting the shark eat the school of fish
+      const penalty = Math.min(gems, 15);
+      gems = Math.max(0, gems - 15);
+      streak = 0;
+      renderHudSlots();
+
+      // Fish panic and scatter into water splashes
+      setTimeout(() => {
+        const fishElements = fishTank.querySelectorAll('[id^="fish-item-"]');
+        fishElements.forEach((f, idx) => {
+          setTimeout(() => {
+            const rect = f.getBoundingClientRect();
+            const stageRect = document.getElementById('game-stage').getBoundingClientRect();
+            createWaterSplash(rect.left + rect.width / 2 - stageRect.left, rect.top + rect.height / 2 - stageRect.top);
+            f.style.transition = 'all 0.35s ease-out';
+            f.style.transform = 'scale(0.15) rotate(45deg)';
+            f.style.opacity = '0';
+          }, 350 + idx * 160);
+        });
+      }, 500);
+
+      // Reset and respawn fish once shark has finished crossing
+      setTimeout(() => {
+        stopJawsAndSharkTimers();
+        if (!isFishing && currentRoundIdx < TOTAL_ROUNDS) {
+          speakCurrentWord();
+          spawnFishForCurrentRound();
+        }
+      }, 3400);
+    }
 
     function createFishSvg(species, word, isLeftFacing) {
       const fontSize = word.length > 7 ? '13px' : '15px';
@@ -1728,6 +2059,7 @@
       const fishTank = document.getElementById('fish-tank');
       fishTank.innerHTML = '';
       clearFishingLine();
+      stopJawsAndSharkTimers();
 
       // Clear any pending fish spawn timers
       spawnTimeouts.forEach(t => clearTimeout(t));
@@ -1753,7 +2085,7 @@
       // Fish appear gradually into the ocean tank ("poco a poco")
       shuffledOptions.forEach((word, idx) => {
         const timeoutId = setTimeout(() => {
-          if (isFishing) return;
+          if (isFishing || sharkAttackOccurring) return;
           const isCorrect = word.trim().toUpperCase() === activeWordObj.word.trim().toUpperCase();
           const isLeftFacing = Math.random() > 0.5;
           const speed = 11 + Math.random() * 4;
@@ -1769,7 +2101,7 @@
             isLeftFacing ? 'swim-path-left' : 'swim-path-right'
           }`;
 
-          // Direction orientation wrapper (vertical bobbing without CSS scale overriding)
+          // Direction orientation wrapper
           const innerContainer = document.createElement('div');
           innerContainer.className = 'relative fish-vertical-float transition-transform duration-200 hover:scale-110 active:scale-95';
           innerContainer.innerHTML = createFishSvg(species, word, isLeftFacing);
@@ -1796,6 +2128,28 @@
 
         spawnTimeouts.push(timeoutId);
       });
+
+      // TIMING FOR FIRST PASS:
+      // After ~9s (first pass completes), start Jaws suspense motif & panic speed
+      jawsWarningTimeout = setTimeout(() => {
+        if (isFishing || sharkAttackOccurring) return;
+
+        // 1. Play Jaws suspense theme
+        startJawsSuspenseTheme();
+
+        // 2. Accelerate fish speed so they swim in panic
+        const fishElements = fishTank.querySelectorAll('[id^="fish-item-"]');
+        fishElements.forEach(f => {
+          f.classList.add('fish-speed-panic');
+        });
+
+        // 3. If player still hasn't caught the fish in the next 6.5s, the Shark strikes!
+        sharkAttackTimeout = setTimeout(() => {
+          if (!isFishing && !sharkAttackOccurring) {
+            triggerSharkAttack();
+          }
+        }, 6500);
+      }, 9000);
     }
 
     /**
@@ -1928,9 +2282,12 @@
     }
 
     function handleFishCast(fishIdx, isCorrect, wordOption, fishNode) {
-      if (isFishing) return;
+      if (isFishing || sharkAttackOccurring) return;
       isFishing = true;
       totalAttempts++;
+
+      // Stop Jaws suspense music & any pending shark attack immediately upon hooking
+      stopJawsAndSharkTimers();
 
       const stageRect = document.getElementById('game-stage').getBoundingClientRect();
       const tank = document.getElementById('fish-tank');
@@ -2112,33 +2469,69 @@
               fishNode.style.top = `${targetSeafloorY}px`;
             });
 
-            // Landing on the seabed: puff of sand, reorient and change swimming depth
+            // Landing on the seabed: puff of sand, sound, fade out so it does not stay on screen
             setTimeout(() => {
               const finalRect = fishNode.getBoundingClientRect();
               const sandX = finalRect.left + finalRect.width / 2 - stageRect.left;
               createSandPuff(sandX, stageRect.height - 85);
               soundEngine.playSandSinkThud();
 
-              // Fish levels back out to horizontal
-              fishNode.style.transform = 'rotate(0deg)';
+              // Fade out upon reaching the sand so it disappears from the seafloor
+              fishNode.style.transition = 'opacity 0.45s ease-out, transform 0.3s ease-out';
+              fishNode.style.opacity = '0';
               fishNode.classList.remove('fish-head-down-sink');
+
+              // Allow the player to fish other swimming fish immediately
+              isFishing = false;
 
               // Repeat the challenge word once the fish has sunk to the seabed
               speakCurrentWord();
 
-              // Reposition to a new realistic cruising depth (cambia de posición como en la vida real)
-              const availableDepths = [28, 38, 50, 62];
-              const newRandomDepth = availableDepths[Math.floor(Math.random() * availableDepths.length)];
+              // Restart Jaws suspense warning timer if not already active
+              if (!jawsWarningTimeout && !sharkAttackTimeout && !sharkAttackOccurring) {
+                jawsWarningTimeout = setTimeout(() => {
+                  if (isFishing || sharkAttackOccurring) return;
+                  startJawsSuspenseTheme();
+                  const fishElements = document.getElementById('fish-tank')?.querySelectorAll('[id^="fish-item-"]');
+                  fishElements?.forEach(f => f.classList.add('fish-speed-panic'));
+                  sharkAttackTimeout = setTimeout(() => {
+                    if (!isFishing && !sharkAttackOccurring) {
+                      triggerSharkAttack();
+                    }
+                  }, 6500);
+                }, 8000);
+              }
 
+              // After fading out, re-queue the fish to enter from outside the screen on the next lap ("la siguiente vuelta")
               setTimeout(() => {
+                const availableDepths = [26, 38, 50, 64];
+                const newRandomDepth = availableDepths[Math.floor(Math.random() * availableDepths.length)];
+
+                // Clear all manual inline positioning overrides
                 fishNode.style.left = '';
                 fishNode.style.top = `${newRandomDepth}%`;
+                fishNode.style.transform = '';
+                fishNode.style.transition = 'opacity 0.6s ease-in';
+                fishNode.style.animation = 'none';
+
+                // Re-add direction swim class
+                fishNode.classList.remove('swim-path-left', 'swim-path-right');
                 fishNode.classList.add(wasSwimmingLeft ? 'swim-path-left' : 'swim-path-right');
+
                 const inner = fishNode.firstElementChild;
-                if (inner) inner.classList.add('fish-vertical-float');
-                isFishing = false;
-              }, 400);
-            }, 1250);
+                if (inner) {
+                  inner.style.animation = '';
+                  inner.classList.add('fish-vertical-float');
+                }
+
+                // Force layout reflow so animation starts from 0% (outside the screen)
+                void fishNode.offsetWidth;
+                fishNode.style.animation = '';
+
+                // Fade back in as it smoothly swims in from the edge on the next lap
+                fishNode.style.opacity = '1';
+              }, 600);
+            }, 1150);
           }, 360);
         }
       }, 380);
@@ -2280,6 +2673,7 @@
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
       }
+      stopJawsAndSharkTimers();
       document.getElementById('victory-modal').classList.add('hidden');
       const coinsContainer = document.getElementById('treasure-coins-container');
       if (coinsContainer) coinsContainer.innerHTML = '';
@@ -2294,6 +2688,7 @@
       xp = 0;
       totalAttempts = 0;
       isFishing = false;
+      sharkAttackOccurring = false;
 
       // Include all 16 spelling words across the full expedition
       roundPool = [...SPELLING_DICTIONARY].sort(() => 0.5 - Math.random());
