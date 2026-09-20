@@ -6,6 +6,15 @@
   <title>Spelling Fishing Adventure</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      position: fixed;
+      inset: 0;
+    }
     @keyframes rodFlex {
       0%, 100% { transform: rotate(0deg); }
       35% { transform: rotate(-14deg) scale(0.97, 1.05); }
@@ -267,7 +276,7 @@
     }
   </style>
 </head>
-<body class="bg-slate-950 w-screen h-screen h-[100dvh] flex flex-col font-sans text-white select-none overflow-hidden m-0 p-0">
+<body class="bg-slate-950 w-full h-full flex flex-col font-sans text-white select-none overflow-hidden m-0 p-0 fixed inset-0">
 
   <div id="game-stage" class="relative w-full h-full flex-1 overflow-hidden shadow-none border-0 bg-gradient-to-b from-sky-400 via-cyan-700 via-blue-900 to-[#021120] flex flex-col">
 
@@ -359,23 +368,23 @@
     </header>
 
     <!-- Surface Area (Pier, Floating Boat, Challenge Signboard) -->
-    <div class="relative w-full h-24 sm:h-36 md:h-44 z-20 overflow-visible flex-shrink-0">
+    <div class="relative w-full h-20 sm:h-28 md:h-36 z-20 overflow-visible flex-shrink-0">
       <!-- Distant Fluffy Sea Clouds -->
       <div class="absolute top-2 left-8 sm:left-16 w-24 sm:w-32 h-5 sm:h-7 bg-white/30 rounded-full blur-[1px] pointer-events-none"></div>
       <div class="absolute top-4 right-32 sm:right-44 w-28 sm:w-40 h-6 sm:h-8 bg-white/20 rounded-full blur-[1px] pointer-events-none"></div>
 
       <!-- Weathered Wooden Pier on the Far Left -->
-      <div class="absolute top-6 sm:top-10 md:top-12 left-0 flex items-end pointer-events-none z-10">
-        <div class="w-14 sm:w-24 md:w-32 h-5 sm:h-7 bg-gradient-to-b from-amber-900 to-amber-950 border-b-4 border-amber-950 shadow-2xl relative">
+      <div class="absolute top-4 sm:top-7 md:top-9 left-0 flex items-end pointer-events-none z-10">
+        <div class="w-14 sm:w-24 md:w-32 h-4 sm:h-6 bg-gradient-to-b from-amber-900 to-amber-950 border-b-4 border-amber-950 shadow-2xl relative">
           <!-- Dock Piles -->
-          <div class="absolute -top-4 sm:-top-6 left-2 w-3 sm:w-4 h-10 sm:h-14 bg-gradient-to-r from-amber-950 via-amber-900 to-amber-950 rounded-t-sm border-r border-amber-800 shadow"></div>
-          <div class="absolute -top-5 sm:-top-7 left-8 sm:left-14 w-3 sm:w-4 h-11 sm:h-15 bg-gradient-to-r from-amber-950 via-amber-900 to-amber-950 rounded-t-sm border-r border-amber-800 shadow"></div>
+          <div class="absolute -top-3 sm:-top-5 left-2 w-3 sm:w-4 h-9 sm:h-12 bg-gradient-to-r from-amber-950 via-amber-900 to-amber-950 rounded-t-sm border-r border-amber-800 shadow"></div>
+          <div class="absolute -top-4 sm:-top-6 left-8 sm:left-14 w-3 sm:w-4 h-10 sm:h-13 bg-gradient-to-r from-amber-950 via-amber-900 to-amber-950 rounded-t-sm border-r border-amber-800 shadow"></div>
           <div class="absolute top-1 left-2 w-2 h-1 bg-slate-600 rounded-full"></div>
         </div>
       </div>
 
       <!-- Seated Fisherman in Floating Boat (Responsive Scale) -->
-      <div id="boat-anchor-container" class="absolute -top-1 sm:top-2 md:top-4 left-0 sm:left-10 md:left-24 z-20 animate-boat-rock pointer-events-none transform scale-[0.62] sm:scale-85 md:scale-100 origin-top-left">
+      <div id="boat-anchor-container" class="absolute -top-2 sm:top-1 md:top-2 left-0 sm:left-8 md:left-20 z-20 animate-boat-rock pointer-events-none transform scale-[0.55] sm:scale-75 md:scale-95 origin-top-left">
         <div class="relative w-64 h-40">
 
           <!-- The Realistic Wooden Boat Skiff -->
@@ -472,7 +481,7 @@
     </div>
 
     <!-- Underwater Ocean Body with Realistic Marine Tank -->
-    <div id="ocean-body" class="relative flex-1 w-full overflow-hidden sm:overflow-visible">
+    <div id="ocean-body" class="relative flex-1 min-h-0 w-full overflow-hidden">
       <!-- Water Surface Entry Ripple Container -->
       <div id="surface-ripples-container" class="absolute inset-0 pointer-events-none z-20"></div>
 
@@ -480,8 +489,8 @@
       <div id="fish-tank" class="absolute inset-0 z-20"></div>
 
       <!-- Golden Sandy Ocean Floor (Undulating Sand Dunes, Ripples, Pebbles & Shells) -->
-      <div class="absolute bottom-0 left-0 right-0 h-14 sm:h-18 md:h-22 pointer-events-none z-10 overflow-hidden pb-[env(safe-area-inset-bottom,0px)]">
-        <svg class="absolute bottom-0 w-full h-full overflow-visible" viewBox="0 0 1400 90" preserveAspectRatio="none">
+      <div class="absolute bottom-0 left-0 right-0 h-24 sm:h-28 md:h-32 pointer-events-none z-10 overflow-hidden pb-[env(safe-area-inset-bottom,0px)]">
+        <svg class="absolute bottom-0 w-full h-full overflow-visible" viewBox="0 0 1400 100" preserveAspectRatio="none">
           <defs>
             <linearGradient id="backSandDuneGrad" x1="0%" y1="0%" x2="0%" y2="100%">
               <stop offset="0%" stop-color="#9a672b" />
@@ -502,28 +511,28 @@
             </linearGradient>
           </defs>
           <!-- Deep background sand dune -->
-          <path d="M0,38 Q220,14 480,30 T980,18 Q1220,34 1400,24 L1400,90 L0,90 Z" fill="url(#backSandDuneGrad)" />
+          <path d="M0,28 Q220,8 480,22 T980,12 Q1220,26 1400,16 L1400,100 L0,100 Z" fill="url(#backSandDuneGrad)" />
           <!-- Foreground natural sand dunes -->
-          <path d="M0,50 Q180,26 400,44 Q620,60 850,34 Q1080,16 1260,38 Q1340,48 1400,42 L1400,90 L0,90 Z" fill="url(#frontSandDuneGrad)" />
+          <path d="M0,38 Q180,18 400,34 Q620,48 850,26 Q1080,10 1260,28 Q1340,38 1400,32 L1400,100 L0,100 Z" fill="url(#frontSandDuneGrad)" />
           <!-- Caustic sunlight shimmer on sand crests -->
-          <path d="M0,50 Q180,26 400,44 Q620,60 850,34 Q1080,16 1260,38 Q1340,48 1400,42" stroke="url(#sandCrestHighlight)" stroke-width="2.8" fill="none" opacity="0.85" />
+          <path d="M0,38 Q180,18 400,34 Q620,48 850,26 Q1080,10 1260,28 Q1340,38 1400,32" stroke="url(#sandCrestHighlight)" stroke-width="2.8" fill="none" opacity="0.85" />
           <!-- Smooth sand ripples and sediment pebbles -->
-          <ellipse cx="260" cy="68" rx="8" ry="3.5" fill="#5c3411" opacity="0.7" />
-          <ellipse cx="258" cy="67" rx="6" ry="2.2" fill="#c4934e" />
-          <ellipse cx="610" cy="72" rx="10" ry="4" fill="#4d2b0c" opacity="0.7" />
-          <ellipse cx="608" cy="71" rx="7.5" ry="2.5" fill="#d5a560" />
-          <ellipse cx="920" cy="64" rx="7" ry="3" fill="#4a290b" opacity="0.7" />
-          <ellipse cx="919" cy="63" rx="5" ry="2" fill="#ba8945" />
-          <ellipse cx="1140" cy="74" rx="9" ry="3.5" fill="#522f0f" opacity="0.65" />
-          <ellipse cx="1138" cy="73" rx="6.5" ry="2.2" fill="#cb9b54" />
+          <ellipse cx="260" cy="58" rx="8" ry="3.5" fill="#5c3411" opacity="0.7" />
+          <ellipse cx="258" cy="57" rx="6" ry="2.2" fill="#c4934e" />
+          <ellipse cx="610" cy="62" rx="10" ry="4" fill="#4d2b0c" opacity="0.7" />
+          <ellipse cx="608" cy="61" rx="7.5" ry="2.5" fill="#d5a560" />
+          <ellipse cx="920" cy="54" rx="7" ry="3" fill="#4a290b" opacity="0.7" />
+          <ellipse cx="919" cy="53" rx="5" ry="2" fill="#ba8945" />
+          <ellipse cx="1140" cy="64" rx="9" ry="3.5" fill="#522f0f" opacity="0.65" />
+          <ellipse cx="1138" cy="63" rx="6.5" ry="2.2" fill="#cb9b54" />
           <!-- Small sea shells resting in the sand -->
-          <path d="M430,66 C426,62 436,58 440,63 C444,68 434,70 430,66 Z" fill="#ffedd5" stroke="#c2410c" stroke-width="0.8" />
-          <path d="M780,72 C776,68 786,65 789,69 C792,73 784,75 780,72 Z" fill="#fed7aa" stroke="#9a3412" stroke-width="0.8" />
+          <path d="M430,56 C426,52 436,48 440,53 C444,58 434,60 430,56 Z" fill="#ffedd5" stroke="#c2410c" stroke-width="0.8" />
+          <path d="M780,62 C776,58 786,55 789,59 C792,63 784,65 780,62 Z" fill="#fed7aa" stroke="#9a3412" stroke-width="0.8" />
         </svg>
       </div>
 
       <!-- Seafloor Ecosystem: Swaying Kelp, Corals, Sea Shells and Starfish -->
-      <div class="absolute bottom-1 sm:bottom-2 w-full h-24 sm:h-32 md:h-36 pointer-events-none flex items-end justify-between px-2 sm:px-8 z-20 pb-[env(safe-area-inset-bottom,0px)]">
+      <div class="absolute bottom-2 sm:bottom-4 w-full h-28 sm:h-36 md:h-44 pointer-events-none flex items-end justify-between px-2 sm:px-8 z-20 pb-[env(safe-area-inset-bottom,0px)]">
         <!-- Dense Realistic Kelp Forest Left -->
         <div class="flex space-x-1 sm:space-x-4 items-end">
           <svg viewBox="0 0 110 160" class="w-14 sm:w-22 md:w-28 h-20 sm:h-32 md:h-40 overflow-visible kelp-sway-left drop-shadow-md">
@@ -1662,7 +1671,7 @@
 
       const speciesList = ['tang', 'clownfish', 'angelfish', 'goldenkoi'].sort(() => 0.5 - Math.random());
       const shuffledOptions = [...activeWordObj.options].sort(() => 0.5 - Math.random());
-      const depths = [32, 48, 63, 78].sort(() => 0.5 - Math.random());
+      const depths = [26, 40, 54, 68].sort(() => 0.5 - Math.random());
 
       shuffledOptions.forEach((word, idx) => {
         const isCorrect = word.trim().toUpperCase() === activeWordObj.word.trim().toUpperCase();
@@ -2009,7 +2018,7 @@
             soundEngine.playBubbleStream();
 
             // Plunge down to seabed from exact current column location (using tank coordinates)
-            const targetSeafloorY = tankRect.height - 110;
+            const targetSeafloorY = tankRect.height - 95;
             requestAnimationFrame(() => {
               fishNode.style.top = `${targetSeafloorY}px`;
             });
@@ -2018,7 +2027,7 @@
             setTimeout(() => {
               const finalRect = fishNode.getBoundingClientRect();
               const sandX = finalRect.left + finalRect.width / 2 - stageRect.left;
-              createSandPuff(sandX, stageRect.height - 110);
+              createSandPuff(sandX, stageRect.height - 85);
               soundEngine.playSandSinkThud();
 
               // Fish levels back out to horizontal
@@ -2029,7 +2038,7 @@
               speakCurrentWord();
 
               // Reposition to a new realistic cruising depth (cambia de posición como en la vida real)
-              const availableDepths = [35, 46, 58, 70, 78];
+              const availableDepths = [28, 38, 50, 62];
               const newRandomDepth = availableDepths[Math.floor(Math.random() * availableDepths.length)];
 
               setTimeout(() => {
